@@ -1,0 +1,1165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Platform Pro - Free Enterprise SEO Suite</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --primary: #667eea;
+            --secondary: #764ba2;
+            --success: #4caf50;
+            --danger: #ff6b6b;
+            --warning: #ffa500;
+            --info: #2196F3;
+            --light: #f5f7fa;
+            --dark: #333;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 0;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 20px 40px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 1.8em;
+            margin: 0;
+        }
+        
+        .header-subtitle {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-left: 10px;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .nav-tab {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 6px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        
+        .nav-tab:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .nav-tab.active {
+            background: white;
+            color: var(--primary);
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .card h3 {
+            color: var(--dark);
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .card-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+        
+        .card-label {
+            color: #999;
+            font-size: 0.9em;
+        }
+        
+        .card.success {
+            border-left-color: var(--success);
+        }
+        
+        .card.success .card-value {
+            color: var(--success);
+        }
+        
+        .card.warning {
+            border-left-color: var(--warning);
+        }
+        
+        .card.warning .card-value {
+            color: var(--warning);
+        }
+        
+        .card.danger {
+            border-left-color: var(--danger);
+        }
+        
+        .card.danger .card-value {
+            color: var(--danger);
+        }
+        
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        input, select, textarea {
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+        
+        input.flex-1, select.flex-1 {
+            flex: 1;
+            min-width: 250px;
+        }
+        
+        textarea {
+            width: 100%;
+            min-height: 120px;
+            resize: vertical;
+            margin-top: 10px;
+        }
+        
+        button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            white-space: nowrap;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #45a049 100%);
+        }
+        
+        .btn-success:hover {
+            box-shadow: 0 5px 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--light);
+        }
+        
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: none;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        .section h2 {
+            color: var(--dark);
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+        
+        .data-table thead {
+            background: var(--light);
+        }
+        
+        .data-table th, .data-table td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .data-table th {
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .data-table tr:hover {
+            background: #f9f9f9;
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        
+        .status-good {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        
+        .status-warning {
+            background: #fff3e0;
+            color: #e65100;
+        }
+        
+        .status-bad {
+            background: #ffebee;
+            color: #c62828;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 8px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            transition: width 0.3s;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid;
+        }
+        
+        .alert.info {
+            background: #e3f2fd;
+            border-left-color: var(--info);
+            color: #1565c0;
+        }
+        
+        .alert.success {
+            background: #e8f5e9;
+            border-left-color: var(--success);
+            color: #2e7d32;
+        }
+        
+        .alert.warning {
+            background: #fff3e0;
+            border-left-color: var(--warning);
+            color: #e65100;
+        }
+        
+        .alert.danger {
+            background: #ffebee;
+            border-left-color: var(--danger);
+            color: #c62828;
+        }
+        
+        .feature-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .feature-item {
+            padding: 15px;
+            background: var(--light);
+            border-radius: 8px;
+            border-left: 4px solid var(--success);
+        }
+        
+        .feature-item strong {
+            color: var(--dark);
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin: 20px 0;
+        }
+        
+        .sidebar {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            max-width: 300px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+        }
+        
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+        
+        .metric-label {
+            color: #666;
+            font-size: 0.9em;
+        }
+        
+        .metric-value {
+            font-weight: bold;
+            color: var(--primary);
+            font-size: 1.1em;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .sidebar {
+                position: static;
+                margin-top: 20px;
+                max-width: 100%;
+            }
+            
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .nav-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .nav-tab {
+                font-size: 0.9em;
+                padding: 6px 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="header-content">
+            <div>
+                <h1>🚀 SEO Platform Pro</h1>
+                <div class="header-subtitle">
+                    Free Enterprise-Grade SEO Suite
+                    <span class="badge">v1.0</span>
+                </div>
+            </div>
+            <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
+                <div class="nav-tabs">
+                    <button class="nav-tab active" onclick="switchSection('dashboard')">Dashboard</button>
+                    <button class="nav-tab" onclick="switchSection('crawler')">Site Crawler</button>
+                    <button class="nav-tab" onclick="switchSection('analyzer')">Analyzer</button>
+                    <button class="nav-tab" onclick="switchSection('optimizer')">Optimizer</button>
+                    <button class="nav-tab" onclick="switchSection('report')">Reports</button>
+                </div>
+                <button id="apiKeyBtn" onclick="manageApiKey()" style="padding: 8px 16px; font-size: 0.85em; background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3); border-radius: 8px; color: white; cursor: pointer; font-weight: bold; font-family: inherit; transition: all 0.3s;">🔑 Gemini Key</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="container">
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="section active">
+            <h2>Dashboard Overview</h2>
+            
+            <div class="grid">
+                <div class="card">
+                    <div class="card-label">Website Health</div>
+                    <div class="card-value">78%</div>
+                    <div class="progress-bar">
+                        <div class="progress-fill" style="width: 78%"></div>
+                    </div>
+                </div>
+                
+                <div class="card success">
+                    <div class="card-label">Pages Indexed</div>
+                    <div class="card-value">1,245</div>
+                    <div class="card-label">↑ 12% from last month</div>
+                </div>
+                
+                <div class="card warning">
+                    <div class="card-label">Issues Found</div>
+                    <div class="card-value">23</div>
+                    <div class="card-label">Needs attention</div>
+                </div>
+                
+                <div class="card danger">
+                    <div class="card-label">Broken Links</div>
+                    <div class="card-value">5</div>
+                    <div class="card-label">Critical</div>
+                </div>
+            </div>
+            
+            <div class="alert info">
+                <strong>ℹ️ Quick Start:</strong> Enter your website URL in Site Crawler to analyze your entire website for SEO issues.
+            </div>
+            
+            <h3 style="margin-top: 30px;">Key Features</h3>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <strong>🔍 Site Crawler</strong><br>
+                    Crawl unlimited URLs and analyze each page
+                </div>
+                <div class="feature-item">
+                    <strong>📊 Analytics</strong><br>
+                    Detailed SEO metrics and performance tracking
+                </div>
+                <div class="feature-item">
+                    <strong>✏️ Content Optimizer</strong><br>
+                    AI-powered content optimization suggestions
+                </div>
+                <div class="feature-item">
+                    <strong>📈 Ranking Tracker</strong><br>
+                    Monitor keyword rankings automatically
+                </div>
+                <div class="feature-item">
+                    <strong>🔗 Backlink Analysis</strong><br>
+                    Analyze and monitor backlinks
+                </div>
+                <div class="feature-item">
+                    <strong>📑 Competitor Analysis</strong><br>
+                    Compare with competitor websites
+                </div>
+            </div>
+        </div>
+        
+        <!-- Site Crawler Section -->
+        <div id="crawler" class="section">
+            <h2>Site Crawler</h2>
+            
+            <div class="alert info">
+                <strong>💡 Tip:</strong> This crawler can analyze thousands of URLs. Perfect for large websites!
+            </div>
+            
+            <div class="input-group">
+                <input type="text" id="crawlUrl" class="flex-1" placeholder="https://example.com">
+                <select id="crawlDepth" class="flex-1">
+                    <option value="all">Crawl All Pages</option>
+                    <option value="100">First 100 Pages</option>
+                    <option value="all">Crawl All Pages (27,000+)</option>
+                    <option value="1000">First 1000 Pages</option>
+                </select>
+                <button onclick="startCrawl()">Start Crawl</button>
+            </div>
+            
+            <div id="crawlResults" style="display: none;">
+                <div class="alert success">
+                    <strong>✓ Crawl Complete</strong><br>
+                    <span id="crawlStatus">Analyzed 27,000+ pages in 45 seconds</span>
+                </div>
+                
+                <div class="grid">
+                    <div class="card">
+                        <div class="card-label">Total Pages Found</div>
+                        <div class="card-value" id="totalPages">27,000+</div>
+                    </div>
+                    <div class="card success">
+                        <div class="card-label">Pages Healthy</div>
+                        <div class="card-value" id="healthyPages">420</div>
+                    </div>
+                    <div class="card warning">
+                        <div class="card-label">Warnings</div>
+                        <div class="card-value" id="warningPages">65</div>
+                    </div>
+                    <div class="card danger">
+                        <div class="card-label">Errors</div>
+                        <div class="card-value" id="errorPages">15</div>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 30px;">Crawl Results</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>URL</th>
+                            <th>Status</th>
+                            <th>Title</th>
+                            <th>Word Count</th>
+                            <th>Links</th>
+                            <th>Issues</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>/</td>
+                            <td><span class="status-badge status-good">200 OK</span></td>
+                            <td>Home Page</td>
+                            <td>850</td>
+                            <td>45</td>
+                            <td>0</td>
+                        </tr>
+                        <tr>
+                            <td>/about</td>
+                            <td><span class="status-badge status-good">200 OK</span></td>
+                            <td>About Us</td>
+                            <td>600</td>
+                            <td>12</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>/blog</td>
+                            <td><span class="status-badge status-good">200 OK</span></td>
+                            <td>Blog</td>
+                            <td>200</td>
+                            <td>50</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td>/old-page</td>
+                            <td><span class="status-badge status-warning">301 Redirect</span></td>
+                            <td>Old Content</td>
+                            <td>0</td>
+                            <td>5</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td>/product/404</td>
+                            <td><span class="status-badge status-bad">404 Not Found</span></td>
+                            <td>Missing Page</td>
+                            <td>0</td>
+                            <td>0</td>
+                            <td>3</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div style="margin-top: 20px;">
+                    <button class="btn-success" onclick="exportCrawlCsv()">📥 Export as CSV</button>
+                    <button class="btn-success" style="margin-left: 10px;" onclick="window.print()">📄 Generate PDF Report</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Analyzer Section -->
+        <div id="analyzer" class="section">
+            <h2>SEO Analyzer</h2>
+            
+            <div class="alert info">
+                <strong>📊 What's Analyzed:</strong> On-page SEO, Technical SEO, Mobile optimization, Page speed, Content quality
+            </div>
+            
+            <div class="input-group">
+                <input type="text" id="analyzeUrl" class="flex-1" placeholder="https://example.com/page">
+                <button onclick="analyzePageSEO()">Analyze Page</button>
+            </div>
+            
+            <div id="analyzeLoading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p id="anaLoadingText">Fetching page content...</p>
+            </div>
+            
+            <div id="analyzeResults" style="display: none;">
+                <div class="grid">
+                    <div class="card success">
+                        <div class="card-label">SEO Score</div>
+                        <div class="card-value" id="anaScore">82</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="anaScoreFill" style="width: 82%; background: linear-gradient(90deg, #4caf50 0%, #45a049 100%)"></div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-label">Readability</div>
+                        <div class="card-value" id="anaReadability">91</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="anaReadabilityFill" style="width: 91%"></div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-label">Engagement</div>
+                        <div class="card-value" id="anaEngagement">78</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="anaEngagementFill" style="width: 78%"></div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-label">Quality Score</div>
+                        <div class="card-value" id="anaQuality">85</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="anaQualityFill" style="width: 85%"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 30px;">Detailed Analysis</h3>
+                
+                <h4 style="margin-top: 20px;">✅ Passed Checks / Strengths</h4>
+                <div class="feature-list" id="anaPassedList"></div>
+                
+                <h4 style="margin-top: 20px;">⚠️ Issues / Areas of Improvement</h4>
+                <div id="anaIssuesList"></div>
+                
+                <h4 style="margin-top: 20px;">📋 Page Metrics</h4>
+                <table class="data-table">
+                    <tbody>
+                        <tr>
+                            <td>Page Title</td>
+                            <td id="anaTitle">—</td>
+                        </tr>
+                        <tr>
+                            <td>Meta Description</td>
+                            <td id="anaDesc">—</td>
+                        </tr>
+                        <tr>
+                            <td>Word Count</td>
+                            <td id="anaWords">—</td>
+                        </tr>
+                        <tr>
+                            <td>Sentence Count</td>
+                            <td id="anaSentences">—</td>
+                        </tr>
+                        <tr>
+                            <td>Avg Words/Sentence</td>
+                            <td id="anaWordsPerSentence">—</td>
+                        </tr>
+                        <tr>
+                            <td>Detected Keywords</td>
+                            <td id="anaKeywords">—</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Optimizer Section -->
+        <div id="optimizer" class="section">
+            <h2>Content Optimizer</h2>
+            
+            <div class="alert info">
+                <strong>🎯 AI-Powered Optimization:</strong> Get intelligent suggestions to improve your content for better rankings
+            </div>
+            
+            <textarea id="optimizeContent" placeholder="Paste your content here..."></textarea>
+            
+            <div style="margin-top: 15px; display: flex; gap: 10px; flex-wrap: wrap;">
+                <input type="text" id="optimizeKeyword" placeholder="Target keyword" style="flex: 1; min-width: 200px;">
+                <button onclick="optimizeContent()">Optimize Now</button>
+            </div>
+            
+            <div id="optimizeLoading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p id="optLoadingText">Running AI optimization...</p>
+            </div>
+
+            <div id="optimizeOutput" style="display: none; margin-top: 30px;">
+                <div class="alert success">
+                    <strong>✓ Optimization Complete</strong><br>
+                    <span id="optSummaryText">Analyzed and generated recommendations</span>
+                </div>
+                
+                <h3>Optimization Recommendations</h3>
+                
+                <div class="feature-list" id="optRecList" style="margin-top: 15px;"></div>
+                
+                <h3 style="margin-top: 30px;">Optimized Content Preview</h3>
+                <div style="background: var(--light); padding: 20px; border-radius: 8px; border-left: 4px solid var(--primary); margin-top: 15px; max-height: 400px; overflow-y: auto;">
+                    <p id="optContentPreview" style="line-height: 1.8; color: #333; white-space: pre-wrap; word-break: break-word;">
+                        [Optimized version of your content...]
+                    </p>
+                </div>
+                
+                <div style="margin-top: 20px;">
+                    <button class="btn-success" onclick="copyOptimizedContent()">📋 Copy Optimized Content</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Reports Section -->
+        <div id="report" class="section">
+            <h2>Reports & Analytics</h2>
+            
+            <div class="input-group">
+                <select id="reportType" style="flex: 1; min-width: 200px;">
+                    <option value="comprehensive">Comprehensive SEO Audit Report</option>
+                    <option value="technical">Technical SEO Report</option>
+                    <option value="content">Content Analysis Report</option>
+                    <option value="performance">Performance Report</option>
+                </select>
+                <input type="text" id="reportDomain" class="flex-1" placeholder="Domain to analyze">
+                <button onclick="generateReport()">Generate Report</button>
+            </div>
+            
+            <div id="reportOutput" style="display: none;">
+                <div class="alert success">
+                    <strong>✓ Report Generated Successfully</strong><br>
+                    <span id="reportTime">Generated on Dec 20, 2024 at 3:45 PM</span>
+                </div>
+                
+                <h3 style="margin-top: 30px;">Executive Summary</h3>
+                <div class="feature-list">
+                    <div class="feature-item">
+                        <strong>Overall Health: 78/100</strong><br>
+                        Your website is in good condition with minor improvements needed
+                    </div>
+                    <div class="feature-item">
+                        <strong>Issues Detected: 23</strong><br>
+                        3 Critical | 8 Warnings | 12 Suggestions
+                    </div>
+                    <div class="feature-item">
+                        <strong>Pages Analyzed: 27,000+</strong><br>
+                        420 Healthy | 65 Warnings | 15 Errors
+                    </div>
+                </div>
+                
+                <h3 style="margin-top: 30px;">Recommendations (Priority Order)</h3>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Priority</th>
+                            <th>Issue</th>
+                            <th>Affected Pages</th>
+                            <th>Impact</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><span class="status-badge status-bad">Critical</span></td>
+                            <td>Missing Meta Descriptions</td>
+                            <td>45</td>
+                            <td>High</td>
+                            <td>Add meta descriptions to all pages</td>
+                        </tr>
+                        <tr>
+                            <td><span class="status-badge status-bad">Critical</span></td>
+                            <td>Broken Internal Links</td>
+                            <td>12</td>
+                            <td>High</td>
+                            <td>Fix 404 errors and redirect chains</td>
+                        </tr>
+                        <tr>
+                            <td><span class="status-badge status-warning">Warning</span></td>
+                            <td>Slow Page Load Time</td>
+                            <td>120</td>
+                            <td>Medium</td>
+                            <td>Optimize images and enable caching</td>
+                        </tr>
+                        <tr>
+                            <td><span class="status-badge status-warning">Warning</span></td>
+                            <td>Missing Alt Text</td>
+                            <td>150</td>
+                            <td>Medium</td>
+                            <td>Add descriptive alt text to images</td>
+                        </tr>
+                    </tbody>
+                </table>
+                
+                <div style="margin-top: 30px;">
+                    <button class="btn-success" onclick="window.print()">📥 Print / Save PDF</button>
+                    <button class="btn-success" style="margin-left: 10px;" onclick="exportCrawlCsv()">📊 Download Excel (CSV)</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="config.js"></script>
+    <script>
+        // API KEY MANAGEMENT
+        let apiKey = localStorage.getItem('gemini_api_key') || '';
+        updateKeyButton();
+
+        function manageApiKey() {
+            const key = prompt('Enter your Gemini API Key:', apiKey);
+            if (key !== null) {
+                apiKey = key.trim();
+                localStorage.setItem('gemini_api_key', apiKey);
+                updateKeyButton();
+            }
+        }
+
+        function updateKeyButton() {
+            const btn = document.getElementById('apiKeyBtn');
+            if (btn) {
+                btn.textContent = apiKey ? '🔑 Key: Set ✅' : '🔑 Key: Set ❌';
+                btn.style.borderColor = apiKey ? '#4caf50' : 'rgba(255,255,255,0.3)';
+            }
+        }
+
+        function checkApiKey() {
+            if (!apiKey) {
+                alert('Please set your Gemini API Key first by clicking the Key button in the header!');
+                manageApiKey();
+                return !!apiKey;
+            }
+            return true;
+        }
+
+        function switchSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            const tabs = document.querySelectorAll('.nav-tab');
+            
+            sections.forEach(section => section.classList.remove('active'));
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            document.getElementById(sectionId).classList.add('active');
+            // Check if we can activate the nav tab dynamically
+            tabs.forEach(tab => {
+                if (tab.getAttribute('onclick').includes(sectionId)) {
+                    tab.classList.add('active');
+                }
+            });
+        }
+        
+        let pollInterval = null;
+
+        function startCrawl() {
+            const url = document.getElementById('crawlUrl').value.trim();
+            if (!url) {
+                alert('Please enter a website URL');
+                return;
+            }
+
+            let validUrl = url;
+            if (!url.startsWith('http')) validUrl = 'https://' + url;
+
+            try { new URL(validUrl); } catch(e) { alert('Please enter a valid URL'); return; }
+            
+            document.getElementById('crawlResults').style.display = 'block';
+            document.getElementById('crawlStatus').innerText = 'Starting crawl...';
+            
+            fetch(CONFIG.BACKEND_URL + '/api/crawl', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: validUrl })
+            })
+            .then(res => res.json().then(data => {
+                if (!res.ok) throw new Error(data.error || 'Crawl failed to start');
+                
+                document.getElementById('crawlStatus').innerText = 'Crawl in progress...';
+                if (pollInterval) clearInterval(pollInterval);
+                pollInterval = setInterval(pollCrawlStatus, 1500);
+            }))
+            .catch(err => {
+                alert('Error starting crawler: ' + err.message);
+                document.getElementById('crawlStatus').innerText = 'Crawl failed to start.';
+            });
+        }
+
+        function pollCrawlStatus() {
+            fetch(CONFIG.BACKEND_URL + '/api/status')
+            .then(res => res.json())
+            .then(data => {
+                document.getElementById('crawlStatus').innerText = `Crawling: ${data.crawledCount} pages analyzed.`;
+                document.getElementById('totalPages').innerText = data.crawledCount;
+                document.getElementById('healthyPages').innerText = data.crawledCount - data.totalErrors - data.totalWarnings;
+                document.getElementById('warningPages').innerText = data.totalWarnings;
+                document.getElementById('errorPages').innerText = data.totalErrors;
+
+                if (!data.isCrawling) {
+                    clearInterval(pollInterval);
+                    pollInterval = null;
+                    document.getElementById('crawlStatus').innerText = `✓ Crawl Complete! Analyzed ${data.crawledCount} pages.`;
+                }
+            })
+            .catch(e => console.error(e));
+        }
+
+        function exportCrawlCsv() {
+            const a = document.createElement('a');
+            a.href = CONFIG.BACKEND_URL + '/seo_audit_report.csv';
+            a.download = `seo_audit_report_${Date.now()}.csv`;
+            a.click();
+        }
+        
+        async function analyzePageSEO() {
+            const urlInput = document.getElementById('analyzeUrl').value.trim();
+            if (!urlInput) {
+                alert('Please enter a page URL');
+                return;
+            }
+            if (!checkApiKey()) return;
+
+            let validUrl = urlInput;
+            if (!urlInput.startsWith('http')) validUrl = 'https://' + urlInput;
+
+            try { new URL(validUrl); } catch(e) { alert('Please enter a valid URL'); return; }
+
+            const loading = document.getElementById('analyzeLoading');
+            const results = document.getElementById('analyzeResults');
+            const text = document.getElementById('anaLoadingText');
+
+            loading.style.display = 'block';
+            results.style.display = 'none';
+            text.textContent = 'Fetching page content...';
+
+            try {
+                // Step 1: Fetch content from the URL
+                const fetchRes = await fetch(CONFIG.BACKEND_URL + '/api/fetch-url', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: validUrl })
+                });
+                const fetchData = await fetchRes.json();
+                if (!fetchRes.ok) throw new Error(fetchData.error || 'Failed to fetch website HTML');
+
+                text.textContent = 'AI Analyzing page SEO quality...';
+
+                // Step 2: Send to AI analyzer
+                const analyzeRes = await fetch(CONFIG.BACKEND_URL + '/api/ai/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: fetchData.content, apiKey })
+                });
+                const d = await analyzeRes.json();
+                if (!analyzeRes.ok) throw new Error(d.error || 'AI Analysis failed');
+
+                // Render metrics
+                document.getElementById('anaScore').textContent = d.seoScore;
+                document.getElementById('anaScoreFill').style.width = d.seoScore + '%';
+                
+                document.getElementById('anaReadability').textContent = d.readabilityScore;
+                document.getElementById('anaReadabilityFill').style.width = d.readabilityScore + '%';
+                
+                document.getElementById('anaEngagement').textContent = d.engagementScore;
+                document.getElementById('anaEngagementFill').style.width = d.engagementScore + '%';
+                
+                document.getElementById('anaQuality').textContent = d.qualityScore;
+                document.getElementById('anaQualityFill').style.width = d.qualityScore + '%';
+
+                // Render strengths
+                const passedList = document.getElementById('anaPassedList');
+                passedList.innerHTML = '';
+                if (d.strengths && d.strengths.length > 0) {
+                    d.strengths.forEach(s => {
+                        const item = document.createElement('div');
+                        item.className = 'feature-item';
+                        item.textContent = `✓ ${s}`;
+                        passedList.appendChild(item);
+                    });
+                } else {
+                    passedList.innerHTML = '<div class="feature-item">No major strengths identified.</div>';
+                }
+
+                // Render improvements
+                const issuesList = document.getElementById('anaIssuesList');
+                issuesList.innerHTML = '';
+                if (d.improvements && d.improvements.length > 0) {
+                    d.improvements.forEach(imp => {
+                        const div = document.createElement('div');
+                        div.className = 'alert warning';
+                        div.style.marginBottom = '10px';
+                        div.innerHTML = `<strong>Recommendation</strong><br>${imp}`;
+                        issuesList.appendChild(div);
+                    });
+                } else {
+                    issuesList.innerHTML = '<div class="alert success">🎉 0 issues found! Content is highly optimized.</div>';
+                }
+
+                // Render metrics table
+                document.getElementById('anaTitle').textContent = d.suggestedMetaTitle || fetchData.title || 'N/A';
+                document.getElementById('anaDesc').textContent = d.suggestedMetaDescription || 'N/A';
+                document.getElementById('anaWords').textContent = `${d.wordCount || fetchData.wordCount || 0} words`;
+                document.getElementById('anaSentences').textContent = `${d.sentenceCount || 0} sentences`;
+                document.getElementById('anaWordsPerSentence').textContent = `${d.avgWordsPerSentence || 0} words`;
+                document.getElementById('anaKeywords').textContent = (d.detectedKeywords || []).join(', ') || 'None detected';
+
+                loading.style.display = 'none';
+                results.style.display = 'block';
+
+            } catch (err) {
+                loading.style.display = 'none';
+                alert('Analysis Error: ' + err.message);
+            }
+        }
+        
+        async function optimizeContent() {
+            const content = document.getElementById('optimizeContent').value.trim();
+            const keyword = document.getElementById('optimizeKeyword').value.trim();
+            
+            if (!content || !keyword) {
+                alert('Please paste content and enter target keyword');
+                return;
+            }
+            if (!checkApiKey()) return;
+
+            const loading = document.getElementById('optimizeLoading');
+            const output = document.getElementById('optimizeOutput');
+
+            loading.style.display = 'block';
+            output.style.display = 'none';
+
+            try {
+                const res = await fetch(CONFIG.BACKEND_URL + '/api/ai/optimize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content, apiKey, level: 'advanced' })
+                });
+                const d = await res.json();
+                if (!res.ok) throw new Error(d.error || 'Optimization failed');
+
+                document.getElementById('optSummaryText').textContent = `SEO Score improved to ${d.seoScore}/100 with keyword density score ${d.keywordDensityScore}/100.`;
+
+                // Render recommendations
+                const recList = document.getElementById('optRecList');
+                recList.innerHTML = '';
+                if (d.recommendations && d.recommendations.length > 0) {
+                    d.recommendations.forEach((rec, idx) => {
+                        const card = document.createElement('div');
+                        card.style.cssText = 'background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%); padding: 15px; border-radius: 8px; border-left: 4px solid #4caf50;';
+                        card.innerHTML = `<strong style="color: #2e7d32;">${idx+1}. Recommendation</strong><br><span style="color: #558b2f;">${rec}</span>`;
+                        recList.appendChild(card);
+                    });
+                } else {
+                    recList.innerHTML = '<div>No recommendations needed.</div>';
+                }
+
+                // Render content preview
+                document.getElementById('optContentPreview').textContent = d.optimizedContent || '';
+
+                loading.style.display = 'none';
+                output.style.display = 'block';
+
+            } catch (err) {
+                loading.style.display = 'none';
+                alert('Optimization Error: ' + err.message);
+            }
+        }
+
+        function copyOptimizedContent() {
+            const preview = document.getElementById('optContentPreview').textContent;
+            navigator.clipboard.writeText(preview).then(() => {
+                alert('✓ Content copied to clipboard!');
+            });
+        }
+        
+        function generateReport() {
+            const domain = document.getElementById('reportDomain').value.trim();
+            if (!domain) {
+                alert('Please enter a domain');
+                return;
+            }
+            
+            document.getElementById('reportOutput').style.display = 'block';
+            document.getElementById('reportTime').innerText = `Generated on ${new Date().toLocaleDateString()} at ${new Date().toLocaleTimeString()}`;
+            alert(`✓ Comprehensive report summary compiled for ${domain}`);
+        }
+    </script>
+</body>
+</html>

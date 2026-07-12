@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SEO Spider — Free Screaming Frog Alternative</title>
+    <meta name="description" content="Free Screaming Frog alternative. Crawl unlimited URLs, find SEO issues, export CSV.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0c0d12;
+            --surface: #141622;
+            --surface2: #1e202f;
+            --border: #2c2f42;
+            --border2: #3d415b;
+            --primary: #5b931e;
+            --primary-glow: rgba(91, 147, 30, 0.25);
+            --green: #5b931e;
+            --green-dim: rgba(91,147,30,0.12);
+            --red: #ef4444;
+            --red-dim: rgba(239,68,68,0.12);
+            --orange: #f59e0b;
+            --orange-dim: rgba(245,158,11,0.12);
+            --blue: #38bdf8;
+            --blue-dim: rgba(56,189,248,0.12);
+            --text: #e2e8f0;
+            --text2: #94a3b8;
+            --text3: #64748b;
+            --mono: 'JetBrains Mono', monospace;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: var(--bg); }
+        ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--primary); }
+
+        /* ── TOP BAR ── */
+        .topbar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 10px 20px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            flex-wrap: wrap;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            text-decoration: none;
+            flex-shrink: 0;
+        }
+        .logo-icon {
+            width: 34px; height: 34px;
+            background: linear-gradient(135deg, var(--primary), #a78bfa);
+            border-radius: 9px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 17px;
+        }
+        .logo-text { font-size: 1.05em; font-weight: 700; color: #fff; }
+        .logo-badge {
+            font-size: 0.65em; font-weight: 600;
+            background: var(--green-dim);
+            color: var(--green);
+            border: 1px solid var(--green);
+            padding: 2px 8px; border-radius: 20px;
+        }
+
+        .url-form {
+            display: flex;
+            gap: 8px;
+            flex: 1;
+            min-width: 300px;
+        }
+
+        .url-input {
+            flex: 1;
+            background: var(--surface2);
+            border: 1px solid var(--border2);
+            border-radius: 8px;
+            padding: 9px 14px;
+            color: var(--text);
+            font-family: var(--mono);
+            font-size: 0.85em;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        .url-input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-glow); }
+        .url-input::placeholder { color: var(--text3); }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 9px 18px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+        .btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .btn-start { background: var(--primary); color: #fff; box-shadow: 0 0 12px var(--primary-glow); }
+        .btn-start:hover:not(:disabled) { background: #6a5af0; box-shadow: 0 0 20px var(--primary-glow); }
+        .btn-stop { background: var(--red-dim); border: 1px solid var(--red); color: var(--red); }
+        .btn-stop:hover:not(:disabled) { background: rgba(239,68,68,0.25); }
+        .btn-export { background: var(--green-dim); border: 1px solid var(--green); color: var(--green); }
+        .btn-export:hover:not(:disabled) { background: rgba(34,197,94,0.25); }
+        .btn-excel { background: var(--blue-dim); border: 1px solid var(--blue); color: var(--blue); }
+        .btn-excel:hover:not(:disabled) { background: rgba(56,189,248,0.25); }
+        .btn-home { background: transparent; border: 1px solid var(--border2); color: var(--text2); font-size: 0.8em; padding: 7px 14px; }
+        .btn-home:hover { border-color: var(--primary); color: var(--primary); }
+
+        /* ── STATS BAR ── */
+        .statsbar {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            background: var(--surface2);
+            border-bottom: 1px solid var(--border);
+            flex-shrink: 0;
+            overflow-x: auto;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 22px;
+            border-right: 1px solid var(--border);
+            white-space: nowrap;
+            min-width: 120px;
+        }
+        .stat-item:last-child { border-right: none; }
+        .stat-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text3); flex-shrink: 0; }
+        .stat-dot.green { background: var(--green); box-shadow: 0 0 6px var(--green); }
+        .stat-dot.red { background: var(--red); box-shadow: 0 0 6px var(--red); }
+        .stat-dot.orange { background: var(--orange); }
+        .stat-dot.blue { background: var(--blue); }
+        .stat-dot.pulse { animation: pulse 1.2s ease infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+        .stat-label { font-size: 0.72em; color: var(--text3); text-transform: uppercase; letter-spacing: 0.5px; }
+        .stat-value { font-size: 1.15em; font-weight: 700; color: var(--text); font-family: var(--mono); }
+        .stat-value.green { color: var(--green); }
+        .stat-value.red { color: var(--red); }
+        .stat-value.orange { color: var(--orange); }
+        .stat-value.blue { color: var(--blue); }
+
+        .status-text {
+            flex: 1;
+            padding: 10px 18px;
+            font-size: 0.78em;
+            color: var(--text3);
+            font-family: var(--mono);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .status-text.crawling { color: var(--primary); }
+
+        /* ── FILTER TABS ── */
+        .filtertabs {
+            display: flex;
+            align-items: center;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            overflow-x: auto;
+            flex-shrink: 0;
+            gap: 0;
+        }
+
+        .filter-tab {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 10px 18px;
+            font-size: 0.8em;
+            font-weight: 500;
+            color: var(--text2);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            border: none;
+            background: transparent;
+            font-family: 'Inter', sans-serif;
+            white-space: nowrap;
+            transition: all 0.2s;
+        }
+        .filter-tab:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+        .filter-tab.active { color: var(--primary); border-bottom-color: var(--primary); background: rgba(124,108,252,0.07); }
+        .filter-count {
+            font-size: 0.8em;
+            font-weight: 700;
+            padding: 1px 7px;
+            border-radius: 10px;
+            background: var(--surface2);
+            font-family: var(--mono);
+        }
+        .filter-tab.active .filter-count { background: var(--primary-glow); color: var(--primary); }
+
+        .export-actions {
+            margin-left: auto;
+            display: flex;
+            gap: 8px;
+            padding: 6px 14px;
+            border-left: 1px solid var(--border);
+            flex-shrink: 0;
+        }
+
+        /* ── TABLE AREA ── */
+        .table-wrapper {
+            flex: 1;
+            overflow: auto;
+            position: relative;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.78em;
+        }
+
+        thead {
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            background: var(--surface2);
+        }
+
+        thead th {
+            padding: 10px 12px;
+            text-align: left;
+            color: var(--text3);
+            font-size: 0.8em;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            border-bottom: 1px solid var(--border);
+            border-right: 1px solid var(--border);
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            background: var(--surface2);
+        }
+        thead th:hover { color: var(--text); background: var(--surface); }
+        thead th.sort-asc::after { content: ' ↑'; color: var(--primary); }
+        thead th.sort-desc::after { content: ' ↓'; color: var(--primary); }
+
+        #dataTable tbody tr {
+            border-bottom: 1px solid var(--border);
+            transition: background 0.15s;
+        }
+        #dataTable tbody tr:hover { background: rgba(255,255,255,0.025); }
+        #dataTable tbody tr.selected { background: var(--primary-glow); }
+
+        #dataTable tbody td {
+            padding: 8px 12px;
+            border-right: 1px solid var(--border);
+            vertical-align: middle;
+            max-width: 0;
+        }
+
+        .cell-url {
+            font-family: var(--mono);
+            color: var(--blue);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 280px;
+            cursor: pointer;
+        }
+        .cell-url:hover { text-decoration: underline; }
+
+        .cell-text {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+            color: var(--text2);
+        }
+
+        .cell-num {
+            font-family: var(--mono);
+            text-align: right;
+            color: var(--text2);
+            white-space: nowrap;
+        }
+
+        /* Status badges */
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 3px 9px;
+            border-radius: 4px;
+            font-family: var(--mono);
+            font-size: 0.9em;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .badge-2xx { background: var(--green-dim); color: var(--green); border: 1px solid rgba(34,197,94,0.3); }
+        .badge-3xx { background: var(--blue-dim); color: var(--blue); border: 1px solid rgba(56,189,248,0.3); }
+        .badge-4xx { background: var(--red-dim); color: var(--red); border: 1px solid rgba(239,68,68,0.3); }
+        .badge-5xx { background: rgba(239,68,68,0.2); color: #ff6b6b; border: 1px solid rgba(239,68,68,0.4); }
+        .badge-0 { background: rgba(100,116,139,0.2); color: var(--text3); border: 1px solid var(--border); }
+
+        /* Issue highlights */
+        .issue-red { color: var(--red) !important; }
+        .issue-orange { color: var(--orange) !important; }
+        .issue-green { color: var(--green) !important; }
+        .bg-issue-red td { background: rgba(239,68,68,0.04); }
+        .bg-issue-orange td { background: rgba(245,158,11,0.04); }
+
+        /* Noindex badge */
+        .noindex-yes { color: var(--orange); font-weight: 600; }
+        .noindex-no { color: var(--text3); }
+
+        /* ── EMPTY STATE ── */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            gap: 16px;
+            color: var(--text3);
+            padding: 40px;
+        }
+        .empty-icon { font-size: 4em; }
+        .empty-title { font-size: 1.3em; font-weight: 600; color: var(--text2); }
+        .empty-sub { font-size: 0.9em; text-align: center; max-width: 400px; line-height: 1.6; }
+
+        /* ── LOADING BAR ── */
+        .progress-bar-wrap {
+            height: 3px;
+            background: var(--border);
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), #a78bfa);
+            transition: width 0.5s;
+            animation: shimmer 2s linear infinite;
+            background-size: 200% 100%;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* ── ROW COUNT ── */
+        .rowcount {
+            padding: 6px 18px;
+            font-size: 0.75em;
+            color: var(--text3);
+            background: var(--surface2);
+            border-top: 1px solid var(--border);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* ── TOOLTIP ── */
+        .tooltip-text {
+            position: fixed;
+            background: var(--surface);
+            border: 1px solid var(--border2);
+            color: var(--text);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 0.78em;
+            font-family: var(--mono);
+            max-width: 500px;
+            word-break: break-all;
+            z-index: 1000;
+            pointer-events: none;
+            display: none;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ── TOP BAR ── -->
+<div class="topbar">
+    <a class="logo" href="index.html">
+        <div class="logo-icon">🕷️</div>
+        <span class="logo-text">SEO Spider</span>
+        <span class="logo-badge">FREE</span>
+    </a>
+
+    <div class="url-form">
+        <input type="text" id="urlInput" class="url-input"
+            placeholder="https://example.com"
+            onkeydown="if(event.key==='Enter') startCrawl()">
+        <button class="btn btn-start" id="startBtn" onclick="startCrawl()">▶ Start Crawl</button>
+        <button class="btn btn-stop" id="stopBtn" onclick="stopCrawl()" disabled>⬛ Stop</button>
+    </div>
+
+    <a href="index.html" class="btn btn-home">← Home</a>
+</div>
+
+<!-- ── PROGRESS BAR ── -->
+<div class="progress-bar-wrap" id="progressWrap" style="display:none;">
+    <div class="progress-bar-fill" style="width:100%; background: linear-gradient(90deg, #7c6cfc 0%, #a78bfa 50%, #7c6cfc 100%);"></div>
+</div>
+
+<!-- ── STATS BAR ── -->
+<div class="statsbar">
+    <div class="stat-item">
+        <div class="stat-dot" id="crawlDot"></div>
+        <div>
+            <div class="stat-label">Crawled URLs</div>
+            <div class="stat-value" id="statCrawled">0</div>
+        </div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-dot red" id="errDot"></div>
+        <div>
+            <div class="stat-label">Errors (4xx/5xx)</div>
+            <div class="stat-value red" id="statErrors">0</div>
+        </div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-dot orange"></div>
+        <div>
+            <div class="stat-label">Warnings</div>
+            <div class="stat-value orange" id="statWarnings">0</div>
+        </div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-dot blue"></div>
+        <div>
+            <div class="stat-label">Speed</div>
+            <div class="stat-value blue" id="statSpeed">—</div>
+        </div>
+    </div>
+    <div class="stat-item">
+        <div class="stat-dot"></div>
+        <div>
+            <div class="stat-label">Time</div>
+            <div class="stat-value" id="statTime">—</div>
+        </div>
+    </div>
+    <div class="status-text" id="statusText">Enter a URL and click "Start Crawl" to begin</div>
+</div>
+
+<!-- ── FILTER TABS ── -->
+<div class="filtertabs">
+    <button class="filter-tab active" onclick="setFilter('all', this)">All <span class="filter-count" id="fc-all">0</span></button>
+    <button class="filter-tab" onclick="setFilter('2xx', this)">✅ 2xx OK <span class="filter-count" id="fc-2xx">0</span></button>
+    <button class="filter-tab" onclick="setFilter('3xx', this)">🔄 3xx Redirect <span class="filter-count" id="fc-3xx">0</span></button>
+    <button class="filter-tab" onclick="setFilter('4xx5xx', this)">❌ 4xx/5xx Error <span class="filter-count" id="fc-4xx5xx">0</span></button>
+    <button class="filter-tab" onclick="setFilter('no-meta', this)">⚠️ Missing Meta Desc <span class="filter-count" id="fc-no-meta">0</span></button>
+    <button class="filter-tab" onclick="setFilter('no-h1', this)">⚠️ Missing H1 <span class="filter-count" id="fc-no-h1">0</span></button>
+    <button class="filter-tab" onclick="setFilter('noindex', this)">🚫 No-index <span class="filter-count" id="fc-noindex">0</span></button>
+    <button class="filter-tab" onclick="setFilter('dup-title', this)">🔁 Dup Titles <span class="filter-count" id="fc-dup-title">0</span></button>
+    <button class="filter-tab" onclick="setFilter('dup-meta', this)">🔁 Dup Meta Desc <span class="filter-count" id="fc-dup-meta">0</span></button>
+    <div class="export-actions">
+        <button class="btn btn-export" id="exportCsvBtn" onclick="exportCSV()" disabled>⬇ CSV</button>
+        <button class="btn btn-excel" id="exportXlsBtn" onclick="exportExcel()" disabled>📊 Excel</button>
+    </div>
+</div>
+
+<!-- ── MAIN LAYOUT (Screaming Frog Style Split-Screen) ── -->
+<div id="mainLayout" style="display: flex; flex: 1; overflow: hidden; flex-direction: row; width: 100%;">
+    <!-- LEFT PANEL: TABLE + BOTTOM DETAILS PANEL -->
+    <div style="display: flex; flex-direction: column; flex: 1; overflow: hidden; border-right: 1px solid var(--border);">
+        <!-- TABLE WRAPPER -->
+        <div class="table-wrapper" id="tableWrapper" style="flex: 1; overflow: auto; position: relative;">
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">🕷️</div>
+                <div class="empty-title">SEO Spider Ready</div>
+                <div class="empty-sub">
+                    Upar URL daalo aur "Start Crawl" dabao.<br>
+                    Sari website crawl hogi — koi limit nahi.<br>
+                    Screaming Frog jaisa, bilkul free! 🚀
+                </div>
+            </div>
+            <table id="dataTable" style="display:none; width:100%;">
+                <thead>
+                    <tr>
+                        <th style="width:36px;">#</th>
+                        <th onclick="sortBy('url')" style="min-width:260px;">URL</th>
+                        <th onclick="sortBy('status')" style="min-width:80px;">Status</th>
+                        <th onclick="sortBy('title')" style="min-width:180px;">Title</th>
+                        <th onclick="sortBy('titleLength')" style="min-width:75px;">Title Len</th>
+                        <th onclick="sortBy('metaDesc')" style="min-width:180px;">Meta Description</th>
+                        <th onclick="sortBy('metaDescLength')" style="min-width:80px;">Meta Len</th>
+                        <th onclick="sortBy('h1')" style="min-width:160px;">H1</th>
+                        <th onclick="sortBy('h1Count')" style="min-width:60px;">H1s</th>
+                        <th onclick="sortBy('h2Count')" style="min-width:60px;">H2s</th>
+                        <th onclick="sortBy('canonical')" style="min-width:120px;">Canonical</th>
+                        <th onclick="sortBy('robots')" style="min-width:100px;">Robots</th>
+                        <th onclick="sortBy('isNoindex')" style="min-width:75px;">No-index</th>
+                        <th onclick="sortBy('totalImages')" style="min-width:65px;">Images</th>
+                        <th onclick="sortBy('imagesNoAlt')" style="min-width:75px;">No-Alt</th>
+                        <th onclick="sortBy('internalLinks')" style="min-width:60px;">Int Links</th>
+                        <th onclick="sortBy('externalLinks')" style="min-width:65px;">Ext Links</th>
+                        <th onclick="sortBy('wordCount')" style="min-width:65px;">Words</th>
+                        <th onclick="sortBy('pageSize')" style="min-width:70px;">Size(KB)</th>
+                        <th onclick="sortBy('responseTime')" style="min-width:80px;">Time(ms)</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody"></tbody>
+            </table>
+        </div>
+
+        <!-- BOTTOM PANEL (Tabs + Metadata/SERP Preview) -->
+        <div id="detailsPanel" style="height: 250px; background: var(--surface); border-top: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; flex-shrink: 0;">
+            <div style="display: flex; background: var(--surface2); border-bottom: 1px solid var(--border); flex-shrink: 0; padding: 0 10px;">
+                <button class="bottom-tab active" onclick="switchBottomTab('url-details', this)" style="background: transparent; border: none; border-bottom: 2px solid var(--primary); padding: 8px 16px; color: var(--text); font-size: 0.8em; font-weight: bold; cursor: pointer; outline: none;">URL Details</button>
+                <button class="bottom-tab" onclick="switchBottomTab('serp-preview', this)" style="background: transparent; border: none; padding: 8px 16px; color: var(--text2); font-size: 0.8em; font-weight: bold; cursor: pointer; outline: none;">SERP Snippet Preview</button>
+            </div>
+            <div style="flex: 1; padding: 15px; overflow-y: auto;">
+                <!-- URL Details Tab Content -->
+                <div id="tab-url-details" style="display: block; font-size: 0.8em;">
+                    <div id="detailsPlaceholder" style="color: var(--text3); text-align: center; padding-top: 40px;">Select a URL in the table above to view detailed SEO metadata.</div>
+                    <table id="detailsGrid" style="display: none; width: 100%; border: none;">
+                        <tbody id="detailsGridBody"></tbody>
+                    </table>
+                </div>
+                <!-- SERP Preview Tab Content -->
+                <div id="tab-serp-preview" style="display: none;">
+                    <div id="serpPlaceholder" style="color: var(--text3); text-align: center; padding-top: 40px;">Select a URL in the table above to view SERP snippet.</div>
+                    <div id="serpMock" style="display: none; background: #fff; border-radius: 8px; padding: 16px; max-width: 600px; border: 1px solid #e0e0e0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); margin: 0 auto;">
+                        <div id="serpUrl" style="color: #202124; font-size: 14px; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-family: arial, sans-serif;">https://www.example.com</div>
+                        <h3 id="serpTitle" style="color: #1a0dab; font-size: 20px; font-weight: normal; margin-bottom: 4px; line-height: 1.3; font-family: arial, sans-serif; cursor: pointer;">Diamond or Lookalike? How to Read the Stone Before You Buy</h3>
+                        <p id="serpDesc" style="color: #4d5156; font-size: 14px; line-height: 1.58; font-family: arial, sans-serif; margin-top: 4px;">A diamond can fool the eye... and so can a very convincing lookalike.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL: SIDEBAR TREE SUMMARY -->
+    <div id="sidebarTree" style="width: 280px; background: var(--surface); display: flex; flex-direction: column; overflow-y: auto; padding: 15px; flex-shrink: 0; font-size: 0.8em; border-left: 1px solid var(--border);">
+        <h3 style="color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 8px; margin-bottom: 12px; font-size: 1em; font-weight: 700;">Crawl Summary Tree</h3>
+        <div id="treeContainer">
+            <div style="font-weight: bold; padding: 4px 0; color: var(--primary);">Summary</div>
+            <div style="padding-left: 15px; padding-bottom: 10px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom: 3px; color: var(--text2);"><span>All URLs:</span> <span id="tree-all" style="font-weight:bold; color:var(--text)">0</span></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom: 3px; color: var(--text2);"><span>HTML Pages:</span> <span id="tree-html" style="font-weight:bold; color:var(--text)">0</span></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom: 3px; color: var(--text2);"><span>Images:</span> <span id="tree-images" style="font-weight:bold; color:var(--text)">0</span></div>
+            </div>
+            
+            <div style="font-weight: bold; padding: 4px 0; color: var(--primary);">Response Codes</div>
+            <div style="padding-left: 15px; padding-bottom: 10px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom: 3px; color: var(--text2);"><span>Success (2xx):</span> <span id="tree-2xx" style="font-weight:bold; color:var(--text)">0</span></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom: 3px; color: var(--text2);"><span>Redirection (3xx):</span> <span id="tree-3xx" style="font-weight:bold; color:var(--text)">0</span></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom: 3px; color: var(--text2);"><span>Client Error (4xx):</span> <span id="tree-4xx" style="font-weight:bold; color:var(--text)">0</span></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom: 3px; color: var(--text2);"><span>Server Error (5xx):</span> <span id="tree-5xx" style="font-weight:bold; color:var(--text)">0</span></div>
+            </div>
+
+            <div style="font-weight: bold; padding: 4px 0; color: var(--primary);">Page Titles</div>
+            <div style="padding-left: 15px; padding-bottom: 10px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom: 3px; color: var(--text2);"><span>Missing:</span> <span id="tree-title-missing" style="font-weight:bold; color:var(--text)">0</span></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom: 3px; color: var(--text2);"><span>Too Long (>60):</span> <span id="tree-title-long" style="font-weight:bold; color:var(--text)">0</span></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom: 3px; color: var(--text2);"><span>Too Short (<10):</span> <span id="tree-title-short" style="font-weight:bold; color:var(--text)">0</span></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom: 3px; color: var(--text2);"><span>Duplicate:</span> <span id="tree-title-dup" style="font-weight:bold; color:var(--text)">0</span></div>
+            </div>
+
+            <div style="font-weight: bold; padding: 4px 0; color: var(--primary);">Meta Description</div>
+            <div style="padding-left: 15px; padding-bottom: 10px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom: 3px; color: var(--text2);"><span>Missing:</span> <span id="tree-meta-missing" style="font-weight:bold; color:var(--text)">0</span></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom: 3px; color: var(--text2);"><span>Too Long (>160):</span> <span id="tree-meta-long" style="font-weight:bold; color:var(--text)">0</span></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom: 3px; color: var(--text2);"><span>Duplicate:</span> <span id="tree-meta-dup" style="font-weight:bold; color:var(--text)">0</span></div>
+            </div>
+
+            <div style="font-weight: bold; padding: 4px 0; color: var(--primary);">H1 Headings</div>
+            <div style="padding-left: 15px; padding-bottom: 10px;">
+                <div style="display:flex; justify-content:space-between; margin-bottom: 3px; color: var(--text2);"><span>Missing:</span> <span id="tree-h1-missing" style="font-weight:bold; color:var(--text)">0</span></div>
+                <div style="display:flex; justify-content:space-between; margin-bottom: 3px; color: var(--text2);"><span>Multiple H1s (>1):</span> <span id="tree-h1-multiple" style="font-weight:bold; color:var(--text)">0</span></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── ROW COUNT & STATUS BAR ── -->
+<div class="rowcount">
+    <span id="rowCountText">0 rows</span>
+    <span id="domainInfo" style="color: var(--text3);">—</span>
+</div>
+
+<!-- TOOLTIP -->
+<div class="tooltip-text" id="tooltip"></div>
+
+<script src="config.js"></script>
+<script>
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let allResults = [];
+let filteredResults = [];
+let currentFilter = 'all';
+let currentSort = { col: null, dir: 'asc' };
+let pollInterval = null;
+let lastOffset = 0;
+let isCrawling = false;
+let dupTitles = new Set();
+let dupMetas = new Set();
+
+// ═══════════════════════════════════════════
+// START CRAWL
+// ═══════════════════════════════════════════
+async function startCrawl() {
+    const url = document.getElementById('urlInput').value.trim();
+    if (!url) return toast('URL daalo pehle!', 'orange');
+    if (isCrawling) return toast('Pehle se crawl chal raha hai', 'orange');
+
+    let validUrl = url;
+    if (!url.startsWith('http')) validUrl = 'https://' + url;
+
+    try { new URL(validUrl); } catch(e) { return toast('Valid URL daalo (https://example.com)', 'red'); }
+
+    // Reset
+    allResults = [];
+    filteredResults = [];
+    lastOffset = 0;
+    dupTitles = new Set();
+    dupMetas = new Set();
+    currentFilter = 'all';
+    document.querySelectorAll('.filter-tab').forEach((t,i) => t.classList.toggle('active', i===0));
+
+    document.getElementById('emptyState').style.display = 'none';
+    document.getElementById('dataTable').style.display = 'table';
+    document.getElementById('tableBody').innerHTML = '';
+    document.getElementById('progressWrap').style.display = 'block';
+    document.getElementById('startBtn').disabled = true;
+    document.getElementById('stopBtn').disabled = false;
+    document.getElementById('exportCsvBtn').disabled = true;
+    document.getElementById('exportXlsBtn').disabled = true;
+
+    const crawlDot = document.getElementById('crawlDot');
+    crawlDot.className = 'stat-dot green pulse';
+    isCrawling = true;
+    updateStats(0, 0, 0, '0', '0s');
+
+    try {
+        const res = await fetch(CONFIG.BACKEND_URL + '/api/pro/start', {
+            method: 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify({ url: validUrl })
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        document.getElementById('domainInfo').textContent = '🌐 ' + data.domain;
+        setStatusText('crawling', `Crawling ${data.domain}...`);
+        startPolling();
+    } catch(err) {
+        isCrawling = false;
+        crawlDot.className = 'stat-dot';
+        document.getElementById('progressWrap').style.display = 'none';
+        document.getElementById('startBtn').disabled = false;
+        document.getElementById('stopBtn').disabled = true;
+        toast('Error: ' + err.message + ' — Server chal raha hai? start_crawler.bat run karo!', 'red');
+    }
+}
+
+// ═══════════════════════════════════════════
+// STOP CRAWL
+// ═══════════════════════════════════════════
+async function stopCrawl() {
+    try {
+        await fetch(CONFIG.BACKEND_URL + '/api/pro/stop', { method: 'POST' });
+        setStatusText('', 'Stop request bheja — thodi der me rukega...');
+        toast('Stop request bhej diya ✓', 'orange');
+    } catch(e) {}
+}
+
+// ═══════════════════════════════════════════
+// POLLING
+// ═══════════════════════════════════════════
+function startPolling() {
+    if (pollInterval) clearInterval(pollInterval);
+    pollInterval = setInterval(poll, 1500);
+}
+
+async function poll() {
+    try {
+        const res = await fetch(CONFIG.BACKEND_URL + `/api/pro/status?offset=${lastOffset}`);
+        const data = await res.json();
+
+        if (data.newResults && data.newResults.length > 0) {
+            allResults.push(...data.newResults);
+            lastOffset = data.total;
+            computeDuplicates();
+            applyFilter();
+        }
+
+        updateStats(data.crawledCount, data.errorCount, data.warningCount, data.speed, formatTime(data.elapsed));
+        if (data.currentUrl) setStatusText('crawling', `↳ ${data.currentUrl}`);
+
+        if (!data.isRunning && isCrawling) {
+            // Crawl complete
+            isCrawling = false;
+            clearInterval(pollInterval);
+            pollInterval = null;
+            document.getElementById('progressWrap').style.display = 'none';
+            document.getElementById('crawlDot').className = 'stat-dot green';
+            document.getElementById('startBtn').disabled = false;
+            document.getElementById('stopBtn').disabled = true;
+            document.getElementById('exportCsvBtn').disabled = allResults.length === 0;
+            document.getElementById('exportXlsBtn').disabled = allResults.length === 0;
+            setStatusText('', `✅ Crawl complete — ${allResults.length} URLs found in ${formatTime(data.elapsed)}`);
+            toast(`✅ Crawl mukammal! ${allResults.length} URLs crawl hue`, 'green');
+            updateFilterCounts();
+        }
+    } catch(e) {
+        console.error('Poll error:', e);
+    }
+}
+
+// ═══════════════════════════════════════════
+// DUPLICATE DETECTION
+// ═══════════════════════════════════════════
+function computeDuplicates() {
+    const titleMap = {}, metaMap = {};
+    dupTitles.clear(); dupMetas.clear();
+
+    allResults.forEach(r => {
+        if (r.title) {
+            if (!titleMap[r.title]) titleMap[r.title] = 0;
+            titleMap[r.title]++;
+        }
+        if (r.metaDesc) {
+            if (!metaMap[r.metaDesc]) metaMap[r.metaDesc] = 0;
+            metaMap[r.metaDesc]++;
+        }
+    });
+
+    allResults.forEach(r => {
+        if (r.title && titleMap[r.title] > 1) dupTitles.add(r.url);
+        if (r.metaDesc && metaMap[r.metaDesc] > 1) dupMetas.add(r.url);
+    });
+}
+
+// ═══════════════════════════════════════════
+// FILTER
+// ═══════════════════════════════════════════
+function setFilter(filter, btn) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilter();
+}
+
+function applyFilter() {
+    switch (currentFilter) {
+        case 'all':      filteredResults = [...allResults]; break;
+        case '2xx':      filteredResults = allResults.filter(r => r.status >= 200 && r.status < 300); break;
+        case '3xx':      filteredResults = allResults.filter(r => r.status >= 300 && r.status < 400); break;
+        case '4xx5xx':   filteredResults = allResults.filter(r => r.status >= 400 || r.status === 0); break;
+        case 'no-meta':  filteredResults = allResults.filter(r => !r.metaDesc); break;
+        case 'no-h1':    filteredResults = allResults.filter(r => r.h1Count === 0); break;
+        case 'noindex':  filteredResults = allResults.filter(r => r.isNoindex); break;
+        case 'dup-title': filteredResults = allResults.filter(r => dupTitles.has(r.url)); break;
+        case 'dup-meta': filteredResults = allResults.filter(r => dupMetas.has(r.url)); break;
+        default:         filteredResults = [...allResults];
+    }
+    if (currentSort.col) sortResults();
+    renderTable();
+    updateFilterCounts();
+}
+
+function updateFilterCounts() {
+    // Top Bar Counts
+    document.getElementById('fc-all').textContent = allResults.length;
+    document.getElementById('fc-2xx').textContent = allResults.filter(r => r.status >= 200 && r.status < 300).length;
+    document.getElementById('fc-3xx').textContent = allResults.filter(r => r.status >= 300 && r.status < 400).length;
+    document.getElementById('fc-4xx5xx').textContent = allResults.filter(r => r.status >= 400 || r.status === 0).length;
+    document.getElementById('fc-no-meta').textContent = allResults.filter(r => !r.metaDesc).length;
+    document.getElementById('fc-no-h1').textContent = allResults.filter(r => r.h1Count === 0).length;
+    document.getElementById('fc-noindex').textContent = allResults.filter(r => r.isNoindex).length;
+    document.getElementById('fc-dup-title').textContent = dupTitles.size;
+    document.getElementById('fc-dup-meta').textContent = dupMetas.size;
+
+    // Sidebar Overview Tree Counts
+    const titleMissing = allResults.filter(r => !r.title).length;
+    const titleLong = allResults.filter(r => r.titleLength > 60).length;
+    const titleShort = allResults.filter(r => r.titleLength > 0 && r.titleLength < 10).length;
+    const metaMissing = allResults.filter(r => !r.metaDesc).length;
+    const metaLong = allResults.filter(r => r.metaDescLength > 160).length;
+    const h1Missing = allResults.filter(r => r.h1Count === 0).length;
+    const h1Multiple = allResults.filter(r => r.h1Count > 1).length;
+
+    document.getElementById('tree-all').textContent = allResults.length;
+    document.getElementById('tree-html').textContent = allResults.length;
+    document.getElementById('tree-images').textContent = allResults.reduce((acc, r) => acc + (r.totalImages || 0), 0);
+
+    document.getElementById('tree-2xx').textContent = allResults.filter(r => r.status >= 200 && r.status < 300).length;
+    document.getElementById('tree-3xx').textContent = allResults.filter(r => r.status >= 300 && r.status < 400).length;
+    document.getElementById('tree-4xx').textContent = allResults.filter(r => r.status >= 400 && r.status < 500).length;
+    document.getElementById('tree-5xx').textContent = allResults.filter(r => r.status >= 500 || r.status === 0).length;
+
+    document.getElementById('tree-title-missing').textContent = titleMissing;
+    document.getElementById('tree-title-long').textContent = titleLong;
+    document.getElementById('tree-title-short').textContent = titleShort;
+    document.getElementById('tree-title-dup').textContent = dupTitles.size;
+
+    document.getElementById('tree-meta-missing').textContent = metaMissing;
+    document.getElementById('tree-meta-long').textContent = metaLong;
+    document.getElementById('tree-meta-dup').textContent = dupMetas.size;
+
+    document.getElementById('tree-h1-missing').textContent = h1Missing;
+    document.getElementById('tree-h1-multiple').textContent = h1Multiple;
+}
+
+// ═══════════════════════════════════════════
+// SORT
+// ═══════════════════════════════════════════
+function sortBy(col) {
+    if (currentSort.col === col) {
+        currentSort.dir = currentSort.dir === 'asc' ? 'desc' : 'asc';
+    } else {
+        currentSort.col = col;
+        currentSort.dir = 'asc';
+    }
+    // Update header classes
+    document.querySelectorAll('thead th').forEach(th => {
+        th.classList.remove('sort-asc', 'sort-desc');
+    });
+    const headers = ['#','url','status','title','titleLength','metaDesc','metaDescLength','h1','h1Count','h2Count','canonical','robots','isNoindex','totalImages','imagesNoAlt','internalLinks','externalLinks','wordCount','pageSize','responseTime'];
+    const idx = headers.indexOf(col);
+    if (idx >= 0) {
+        const ths = document.querySelectorAll('thead th');
+        if (ths[idx]) ths[idx].classList.add('sort-' + currentSort.dir);
+    }
+    sortResults();
+    renderTable();
+}
+
+function sortResults() {
+    const { col, dir } = currentSort;
+    filteredResults.sort((a, b) => {
+        let va = a[col], vb = b[col];
+        if (typeof va === 'string') va = va.toLowerCase();
+        if (typeof vb === 'string') vb = vb.toLowerCase();
+        if (va < vb) return dir === 'asc' ? -1 : 1;
+        if (va > vb) return dir === 'asc' ? 1 : -1;
+        return 0;
+    });
+}
+
+// ═══════════════════════════════════════════
+// RENDER TABLE
+// ═══════════════════════════════════════════
+let selectedRowIndex = null;
+
+function selectRow(idx, trElement) {
+    document.querySelectorAll('#tableBody tr').forEach(tr => tr.classList.remove('selected'));
+    trElement.classList.add('selected');
+    selectedRowIndex = idx;
+    
+    const r = filteredResults[idx];
+    if (!r) return;
+    
+    // Update URL details grid
+    document.getElementById('detailsPlaceholder').style.display = 'none';
+    document.getElementById('detailsGrid').style.display = 'table';
+    
+    const detailsGridBody = document.getElementById('detailsGridBody');
+    detailsGridBody.innerHTML = `
+        <tr style="border-bottom:1px solid var(--border)"><td style="font-weight:bold;padding:6px;width:150px;color:var(--text3)">URL:</td><td style="padding:6px;color:var(--blue);word-break:break-all">${escHtml(r.url)}</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="font-weight:bold;padding:6px;color:var(--text3)">Status Code:</td><td style="padding:6px">${statusBadgeHtml(r.status)}</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="font-weight:bold;padding:6px;color:var(--text3)">Title:</td><td style="padding:6px;color:${(r.titleLength > 60 || r.titleLength < 10) ? 'var(--red)' : 'var(--text)'}">${escHtml(r.title) || 'Missing'} (${r.titleLength || 0} chars)</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="font-weight:bold;padding:6px;color:var(--text3)">Meta Desc:</td><td style="padding:6px;color:${!r.metaDesc || r.metaDescLength > 160 ? 'var(--red)' : 'var(--text2)'}">${escHtml(r.metaDesc) || 'Missing'} (${r.metaDescLength || 0} chars)</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="font-weight:bold;padding:6px;color:var(--text3)">H1 Content:</td><td style="padding:6px;color:${r.h1Count !== 1 ? 'var(--red)' : 'var(--text)'}">${escHtml(r.h1) || 'Missing'} (Count: ${r.h1Count})</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="font-weight:bold;padding:6px;color:var(--text3)">Canonical URL:</td><td style="padding:6px;color:var(--text3)">${escHtml(r.canonical) || 'None'}</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="font-weight:bold;padding:6px;color:var(--text3)">Robots Directives:</td><td style="padding:6px">${r.robots || 'None'}</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="font-weight:bold;padding:6px;color:var(--text3)">No-index Status:</td><td style="padding:6px;font-weight:bold;color:${r.isNoindex ? 'var(--orange)' : 'var(--green)'}">${r.isNoindex ? 'Blocked (No-index)' : 'Indexable'}</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="font-weight:bold;padding:6px;color:var(--text3)">Word Count:</td><td style="padding:6px">${r.wordCount} words</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="font-weight:bold;padding:6px;color:var(--text3)">Page Size:</td><td style="padding:6px">${r.pageSize} KB</td></tr>
+        <tr style="border-bottom:1px solid var(--border)"><td style="font-weight:bold;padding:6px;color:var(--text3)">Response Time:</td><td style="padding:6px">${r.responseTime} ms</td></tr>
+    `;
+    
+    // Update SERP Mock
+    document.getElementById('serpPlaceholder').style.display = 'none';
+    document.getElementById('serpMock').style.display = 'block';
+    
+    document.getElementById('serpUrl').textContent = r.url;
+    
+    const serpTitle = document.getElementById('serpTitle');
+    serpTitle.textContent = r.title || 'Untitled Page';
+    if (r.title && r.titleLength > 60) {
+        serpTitle.textContent = r.title.substring(0, 60) + '...';
+    }
+    
+    const serpDesc = document.getElementById('serpDesc');
+    serpDesc.textContent = r.metaDesc || 'Please provide meta description for this page...';
+    if (r.metaDesc && r.metaDescLength > 160) {
+        serpDesc.textContent = r.metaDesc.substring(0, 160) + '...';
+    }
+}
+
+function switchBottomTab(tabId, btn) {
+    document.querySelectorAll('.bottom-tab').forEach(b => {
+        b.classList.remove('active');
+        b.style.color = 'var(--text2)';
+        b.style.borderBottomColor = 'transparent';
+    });
+    btn.classList.add('active');
+    btn.style.color = 'var(--text)';
+    btn.style.borderBottomColor = 'var(--primary)';
+    
+    document.getElementById('tab-url-details').style.display = tabId === 'url-details' ? 'block' : 'none';
+    document.getElementById('tab-serp-preview').style.display = tabId === 'serp-preview' ? 'block' : 'none';
+}
+
+function renderTable() {
+    const tbody = document.getElementById('tableBody');
+    const MAX_ROWS = 5000; // Performance limit
+    const rows = filteredResults.slice(0, MAX_ROWS);
+
+    const html = rows.map((r, i) => {
+        const statusBadge = statusBadgeHtml(r.status);
+        const isErrRow = r.status >= 400 || r.status === 0;
+        const isWarnRow = !r.metaDesc || r.h1Count === 0 || r.titleLength > 60 || r.titleLength < 10 || r.h1Count > 1 || r.metaDescLength > 160;
+
+        const titleClass = (r.titleLength > 60 || r.titleLength < 10) && r.title ? 'issue-red' : '';
+        const metaClass = !r.metaDesc ? 'issue-red' : r.metaDescLength > 160 ? 'issue-red' : '';
+        const h1Class = r.h1Count === 0 ? 'issue-red' : r.h1Count > 1 ? 'issue-red' : '';
+        const noAltClass = r.imagesNoAlt > 0 ? 'issue-orange' : '';
+
+        return `<tr onclick="selectRow(${i}, this)" style="cursor:pointer;" class="${isErrRow ? 'bg-issue-red' : isWarnRow ? 'bg-issue-orange' : ''}">
+            <td class="cell-num" style="color:var(--text3);font-size:0.85em;">${i + 1}</td>
+            <td><div class="cell-url" title="${escHtml(r.url)}" onclick="openUrl('${escHtml(r.url)}')">${escHtml(r.url)}</div></td>
+            <td>${statusBadge}</td>
+            <td><div class="cell-text ${titleClass}" title="${escHtml(r.title)}">${escHtml(r.title) || '<span style="color:var(--red);font-size:0.85em;">MISSING</span>'}</div></td>
+            <td class="cell-num ${titleClass}">${r.titleLength || (r.title ? r.titleLength : '—')}</td>
+            <td><div class="cell-text ${metaClass}" title="${escHtml(r.metaDesc)}">${r.metaDesc ? escHtml(r.metaDesc) : '<span style="color:var(--red);font-size:0.85em;">MISSING</span>'}</div></td>
+            <td class="cell-num ${metaClass}">${r.metaDescLength || (r.metaDesc ? r.metaDescLength : '—')}</td>
+            <td><div class="cell-text ${h1Class}" title="${escHtml(r.h1)}">${r.h1 ? escHtml(r.h1) : '<span style="color:var(--red);font-size:0.85em;">MISSING</span>'}</div></td>
+            <td class="cell-num ${h1Class}">${r.h1Count}</td>
+            <td class="cell-num">${r.h2Count}</td>
+            <td><div class="cell-text" style="color:var(--text3);font-size:0.8em;" title="${escHtml(r.canonical)}">${r.canonical ? escHtml(r.canonical) : '<span style="color:var(--text3);">—</span>'}</div></td>
+            <td><div class="cell-text" style="font-size:0.8em;">${r.robots || '<span style="color:var(--text3);">—</span>'}</div></td>
+            <td class="${r.isNoindex ? 'noindex-yes' : 'noindex-no'}">${r.isNoindex ? '✓' : '✗'}</td>
+            <td class="cell-num">${r.totalImages}</td>
+            <td class="cell-num ${noAltClass}">${r.imagesNoAlt > 0 ? '⚠ ' + r.imagesNoAlt : r.imagesNoAlt}</td>
+            <td class="cell-num">${r.internalLinks}</td>
+            <td class="cell-num">${r.externalLinks}</td>
+            <td class="cell-num">${r.wordCount}</td>
+            <td class="cell-num">${r.pageSize}</td>
+            <td class="cell-num ${r.responseTime > 3000 ? 'issue-red' : r.responseTime > 1500 ? 'issue-orange' : ''}">${r.responseTime}</td>
+        </tr>`;
+    }).join('');
+
+    tbody.innerHTML = html;
+    document.getElementById('rowCountText').textContent =
+        `${filteredResults.length} rows (filter: ${currentFilter})` +
+        (filteredResults.length > MAX_ROWS ? ` — showing first ${MAX_ROWS}` : '');
+}
+
+// ═══════════════════════════════════════════
+// EXPORT
+// ═══════════════════════════════════════════
+async function exportCSV() {
+    try {
+        const res = await fetch(CONFIG.BACKEND_URL + '/api/pro/export');
+        if (!res.ok) { const e = await res.json(); return toast(e.error, 'red'); }
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'seo-spider-report.csv';
+        a.click();
+        URL.revokeObjectURL(url);
+        toast('✅ CSV download ho gaya!', 'green');
+    } catch(e) {
+        toast('Export error: ' + e.message, 'red');
+    }
+}
+
+function exportExcel() {
+    if (allResults.length === 0) return toast('Koi data nahi hai', 'orange');
+
+    const headers = ['#','URL','Status','Title','Title Len','Meta Desc','Meta Len','H1','H1 Count','H2 Count','Canonical','Robots','No-index','Images','No-Alt','Int Links','Ext Links','Words','Size KB','Time ms'];
+
+    const rows = allResults.map((r, i) => [
+        i + 1, r.url, r.status, r.title, r.titleLength,
+        r.metaDesc, r.metaDescLength, r.h1, r.h1Count, r.h2Count,
+        r.canonical, r.robots, r.isNoindex ? '✓' : '✗',
+        r.totalImages, r.imagesNoAlt, r.internalLinks, r.externalLinks,
+        r.wordCount, r.pageSize, r.responseTime
+    ]);
+
+    // Build HTML table (Excel opens this natively)
+    const bgColors = { 'good': '#e8f5e9', 'warn': '#fff8e1', 'bad': '#ffebee', 'normal': '#ffffff' };
+
+    let tableRows = rows.map((row, i) => {
+        const r = allResults[i];
+        const rowBg = (r.status >= 400 || r.status === 0) ? bgColors.bad :
+                      (!r.metaDesc || r.h1Count === 0 || r.titleLength > 60 || r.titleLength < 10 || r.h1Count > 1 || r.metaDescLength > 160) ? bgColors.warn : bgColors.normal;
+        const cells = row.map((v, ci) => {
+            let cellColor = '';
+            if (ci === 2) { // Status
+                cellColor = r.status >= 200 && r.status < 300 ? 'color:#2e7d32;font-weight:bold' :
+                            r.status >= 300 && r.status < 400 ? 'color:#1565c0;font-weight:bold' :
+                            'color:#c62828;font-weight:bold';
+            }
+            if (ci === 4 && (r.titleLength > 60 || r.titleLength < 10)) cellColor = 'color:#c62828;font-weight:bold';
+            if (ci === 5 && !r.metaDesc) cellColor = 'color:#c62828;font-weight:bold';
+            if (ci === 6 && (r.metaDescLength > 160 || !r.metaDesc)) cellColor = 'color:#c62828;font-weight:bold';
+            if (ci === 7 && r.h1Count === 0) cellColor = 'color:#c62828;font-weight:bold';
+            if (ci === 8 && (r.h1Count === 0 || r.h1Count > 1)) cellColor = 'color:#c62828;font-weight:bold';
+            if (ci === 12 && r.isNoindex) cellColor = 'color:#c62828;font-weight:bold';
+            return `<td style="${cellColor}">${escHtml(String(v ?? ''))}</td>`;
+        }).join('');
+        return `<tr style="background:${rowBg}">${cells}</tr>`;
+    }).join('');
+
+    const html = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel">
+<head><meta charset="UTF-8">
+<style>
+body{font-family:Calibri,sans-serif;font-size:11pt;}
+table{border-collapse:collapse;width:100%;}
+th{background:#1a237e;color:#fff;padding:8px 10px;text-align:left;font-size:10pt;border:1px solid #ccc;}
+td{padding:6px 10px;border:1px solid #e0e0e0;font-size:10pt;}
+tr:hover{background:#f5f5f5;}
+</style></head>
+<body>
+<h2 style="color:#1a237e;">SEO Spider Report — ${new URL(document.getElementById('urlInput').value.startsWith('http') ? document.getElementById('urlInput').value : 'https://'+document.getElementById('urlInput').value).hostname}</h2>
+<p style="color:#666;font-size:10pt;">Generated: ${new Date().toLocaleString()} | Total URLs: ${allResults.length}</p>
+<table>
+<thead><tr>${headers.map(h => `<th>${h}</th>`).join('')}</tr></thead>
+<tbody>${tableRows}</tbody>
+</table></body></html>`;
+
+    const blob = new Blob(['\uFEFF' + html], { type: 'application/vnd.ms-excel' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `seo-spider-${Date.now()}.xls`;
+    a.click();
+    URL.revokeObjectURL(url);
+    toast('📊 Excel file download ho gayi!', 'green');
+}
+
+// ═══════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════
+function statusBadgeHtml(status) {
+    if (!status) return `<span class="badge badge-0">ERR 💥</span>`;
+    if (status >= 200 && status < 300) return `<span class="badge badge-2xx">${status} ✅</span>`;
+    if (status >= 300 && status < 400) return `<span class="badge badge-3xx">${status} 🔄</span>`;
+    if (status >= 400 && status < 500) return `<span class="badge badge-4xx">${status} ❌</span>`;
+    return `<span class="badge badge-5xx">${status} 💥</span>`;
+}
+
+function escHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function shortUrl(url) {
+    try {
+        const u = new URL(url);
+        return (u.pathname + u.search).substring(0, 80) || '/';
+    } catch { return url.substring(0, 80); }
+}
+
+function openUrl(url) {
+    window.open(url, '_blank');
+}
+
+function updateStats(crawled, errors, warnings, speed, time) {
+    document.getElementById('statCrawled').textContent = crawled;
+    document.getElementById('statErrors').textContent = errors;
+    document.getElementById('statWarnings').textContent = warnings;
+    document.getElementById('statSpeed').textContent = speed > 0 ? speed + '/s' : '—';
+    document.getElementById('statTime').textContent = time || '—';
+}
+
+function setStatusText(type, text) {
+    const el = document.getElementById('statusText');
+    el.textContent = text;
+    el.className = type === 'crawling' ? 'status-text crawling' : 'status-text';
+}
+
+function formatTime(secs) {
+    if (!secs) return '0s';
+    const m = Math.floor(secs / 60), s = secs % 60;
+    return m > 0 ? `${m}m ${s}s` : `${s}s`;
+}
+
+function toast(msg, type = 'green') {
+    const existing = document.getElementById('toast-el');
+    if (existing) existing.remove();
+    const colors = { green: '#22c55e', red: '#ef4444', orange: '#f59e0b' };
+    const el = document.createElement('div');
+    el.id = 'toast-el';
+    el.style.cssText = `position:fixed;bottom:30px;right:20px;z-index:9999;background:var(--surface);border:1px solid ${colors[type]||colors.green};color:${colors[type]||colors.green};padding:12px 20px;border-radius:10px;font-size:0.85em;font-family:Inter,sans-serif;box-shadow:0 8px 25px rgba(0,0,0,0.5);animation:fadeInUp 0.3s ease;max-width:380px;`;
+    el.textContent = msg;
+    const s = document.createElement('style');
+    s.textContent = '@keyframes fadeInUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}';
+    document.head.appendChild(s);
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 4000);
+}
+</script>
+</body>
+</html>

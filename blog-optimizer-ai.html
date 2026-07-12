@@ -1,0 +1,1824 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI SEO Blog Studio - Free AI-Powered Blog Tool</title>
+    <meta name="description"
+        content="Free AI-powered blog optimization, generation, and SEO audit tool. Get keywords, meta tags, FAQs, and more.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6c63ff;
+            --primary-dark: #574fd6;
+            --secondary: #a78bfa;
+            --accent: #22d3ee;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --dark: #0f0f1a;
+            --card: #1a1a2e;
+            --card2: #16213e;
+            --border: #2d2d4e;
+            --text: #e2e8f0;
+            --text-muted: #94a3b8;
+            --glass: rgba(255, 255, 255, 0.05);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* ── SCROLLBAR ── */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        /* ── HEADER ── */
+        .header {
+            background: linear-gradient(135deg, var(--card) 0%, var(--card2) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 0 30px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(20px);
+        }
+
+        .header-inner {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 38px;
+            height: 38px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: 1.2em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 5px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 4px;
+        }
+
+        .nav-tab {
+            padding: 8px 20px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-radius: 9px;
+            font-size: 0.9em;
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.25s;
+        }
+
+        .nav-tab:hover {
+            color: var(--text);
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .nav-tab.active {
+            background: var(--primary);
+            color: #fff;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-api-key {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 8px 16px;
+            background: var(--glass);
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85em;
+            transition: all 0.25s;
+        }
+
+        .btn-api-key:hover {
+            border-color: var(--primary);
+            color: var(--text);
+        }
+
+        .btn-api-key.active {
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .api-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--danger);
+        }
+
+        .api-dot.connected {
+            background: var(--success);
+            box-shadow: 0 0 6px var(--success);
+        }
+
+        /* ── MAIN CONTENT ── */
+        .main {
+            max-width: 1300px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        /* ── CARDS ── */
+        .card {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 28px;
+            margin-bottom: 24px;
+        }
+
+        .card-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-title-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+
+        /* ── FORM ELEMENTS ── */
+        .input-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+        }
+
+        input[type="text"],
+        input[type="password"],
+        select,
+        textarea {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9em;
+            transition: border-color 0.25s, box-shadow 0.25s;
+            outline: none;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        select:focus,
+        textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.15);
+        }
+
+        input[type="text"]::placeholder,
+        input[type="password"]::placeholder,
+        textarea::placeholder {
+            color: var(--text-muted);
+        }
+
+        .flex-1 {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        select option {
+            background: var(--card2);
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .hint-text {
+            font-size: 0.8em;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        /* ── BUTTONS ── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s;
+            white-space: nowrap;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(108, 99, 255, 0.45);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success), #059669);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-success:hover:not(:disabled) {
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--border);
+            color: var(--text-muted);
+        }
+
+        .btn-outline:hover:not(:disabled) {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-sm {
+            padding: 8px 14px;
+            font-size: 0.82em;
+        }
+
+        /* ── METRICS GRID ── */
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 14px;
+            margin-bottom: 24px;
+        }
+
+        .metric-card {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .metric-label {
+            font-size: 0.75em;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-value {
+            font-size: 2em;
+            font-weight: 700;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .metric-value.success {
+            color: var(--success);
+        }
+
+        .metric-value.warning {
+            color: var(--warning);
+        }
+
+        .metric-value.danger {
+            color: var(--danger);
+        }
+
+        /* ── SCORE RING ── */
+        .score-ring {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: 700;
+            margin: 0 auto 8px;
+            background: conic-gradient(var(--primary) 0%, var(--border) 0%);
+        }
+
+        /* ── ALERT BOXES ── */
+        .alert {
+            padding: 14px 18px;
+            border-radius: 10px;
+            margin-bottom: 16px;
+            border-left: 4px solid;
+            font-size: 0.9em;
+        }
+
+        .alert-info {
+            background: rgba(34, 211, 238, 0.1);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.1);
+            border-color: var(--success);
+            color: var(--success);
+        }
+
+        .alert-warning {
+            background: rgba(245, 158, 11, 0.1);
+            border-color: var(--warning);
+            color: var(--warning);
+        }
+
+        .alert-danger {
+            background: rgba(239, 68, 68, 0.1);
+            border-color: var(--danger);
+            color: var(--danger);
+        }
+
+        /* ── TAGS ── */
+        .tag-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 10px 0;
+        }
+
+        .tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 500;
+            background: rgba(108, 99, 255, 0.15);
+            border: 1px solid rgba(108, 99, 255, 0.3);
+            color: var(--secondary);
+        }
+
+        /* ── RECOMMENDATIONS LIST ── */
+        .rec-list {
+            list-style: none;
+        }
+
+        .rec-list li {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            font-size: 0.9em;
+            color: var(--text-muted);
+        }
+
+        .rec-list li:last-child {
+            border-bottom: none;
+        }
+
+        .rec-list li::before {
+            content: '→';
+            color: var(--primary);
+            flex-shrink: 0;
+            font-weight: 700;
+        }
+
+        /* ── META BOX ── */
+        .meta-box {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            margin-bottom: 16px;
+        }
+
+        .meta-box-label {
+            font-size: 0.75em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .meta-box-value {
+            font-size: 0.95em;
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        .meta-char-count {
+            font-size: 0.75em;
+            color: var(--text-muted);
+            margin-top: 4px;
+            text-align: right;
+        }
+
+        /* ── FAQ ── */
+        .faq-item {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-bottom: 10px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            padding: 14px 18px;
+            font-weight: 600;
+            font-size: 0.9em;
+            color: var(--secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .faq-answer {
+            padding: 0 18px 14px;
+            font-size: 0.88em;
+            color: var(--text-muted);
+            line-height: 1.7;
+            border-top: 1px solid var(--border);
+        }
+
+        /* ── CONTENT PREVIEW ── */
+        .content-preview {
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 24px;
+            max-height: 450px;
+            overflow-y: auto;
+            line-height: 1.8;
+            font-size: 0.9em;
+            color: var(--text-muted);
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .content-preview h1 {
+            font-size: 1.5em;
+            color: #fff;
+            margin-bottom: 12px;
+        }
+
+        .content-preview h2 {
+            font-size: 1.2em;
+            color: var(--secondary);
+            margin: 20px 0 8px;
+        }
+
+        .content-preview h3 {
+            font-size: 1em;
+            color: var(--accent);
+            margin: 14px 0 6px;
+        }
+
+        .content-preview strong {
+            color: var(--text);
+        }
+
+        .content-preview ul {
+            margin-left: 20px;
+        }
+
+        .content-preview li {
+            margin-bottom: 4px;
+        }
+
+        /* ── SPINNER / LOADING ── */
+        .loading-overlay {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid var(--border);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loading-steps {
+            list-style: none;
+            text-align: left;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+        .loading-steps li {
+            padding: 6px 0;
+            font-size: 0.85em;
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .loading-steps li.done {
+            color: var(--success);
+        }
+
+        .loading-steps li.active {
+            color: var(--primary);
+        }
+
+        .step-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--border);
+            flex-shrink: 0;
+        }
+
+        .step-dot.done {
+            background: var(--success);
+        }
+
+        .step-dot.active {
+            background: var(--primary);
+            box-shadow: 0 0 6px var(--primary);
+            animation: pulse-dot 1s ease infinite;
+        }
+
+        @keyframes pulse-dot {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.4;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* ── DIVIDER ── */
+        .divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 24px 0;
+        }
+
+        /* ── SECTION TITLE ── */
+        .section-label {
+            font-size: 0.8em;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 14px;
+        }
+
+        /* ── TWO COL GRID ── */
+        .two-col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .two-col {
+                grid-template-columns: 1fr;
+            }
+
+            .nav-tabs {
+                display: none;
+            }
+        }
+
+        /* ── API KEY MODAL ── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 36px;
+            max-width: 500px;
+            width: 100%;
+            animation: modalIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        @keyframes modalIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+        }
+
+        .modal-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .modal-subtitle {
+            font-size: 0.85em;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .modal-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-size: 0.85em;
+        }
+
+        .modal-link:hover {
+            text-decoration: underline;
+        }
+
+        /* ── EXPORT BAR ── */
+        .export-bar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            padding: 16px;
+            background: var(--card2);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            margin-top: 16px;
+            align-items: center;
+        }
+
+        .export-bar span {
+            font-size: 0.85em;
+            color: var(--text-muted);
+            margin-right: auto;
+        }
+
+        /* ── PROGRESS BAR ── */
+        .progress-bar {
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 6px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 3px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            transition: width 0.5s ease;
+        }
+
+        /* ── BACK BUTTON ── */
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85em;
+            color: var(--text-muted);
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            margin-bottom: 20px;
+            padding: 0;
+            transition: color 0.2s;
+        }
+
+        .back-btn:hover {
+            color: var(--primary);
+        }
+
+        /* ── MOBILE NAV ── */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--card);
+            border-top: 1px solid var(--border);
+            padding: 12px;
+            gap: 5px;
+            z-index: 50;
+        }
+
+        @media (max-width: 768px) {
+            .mobile-nav {
+                display: flex;
+            }
+
+            .main {
+                padding-bottom: 90px;
+            }
+        }
+
+        .home-link {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.85em;
+        }
+
+        .home-link:hover {
+            color: var(--primary);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ══════════════════════════ HEADER ══════════════════════════ -->
+    <div class="header">
+        <div class="header-inner">
+            <a class="logo" href="index.html">
+                <div class="logo-icon">✍️</div>
+                <span class="logo-text">AI SEO Blog Studio</span>
+            </a>
+
+            <div class="nav-tabs" id="mainNavTabs">
+                <button class="nav-tab active" onclick="switchTab('optimize', this)">🔧 Optimize Blog</button>
+                <button class="nav-tab" onclick="switchTab('generate', this)">✨ Generate Blog</button>
+                <button class="nav-tab" onclick="switchTab('analyze', this)">📊 Analyze Content</button>
+            </div>
+
+            <div class="header-actions">
+                <a class="home-link" href="index.html">← Home</a>
+                <button class="btn-api-key" id="apiKeyBtn" onclick="openApiModal()">
+                    <div class="api-dot" id="apiDot"></div>
+                    <span id="apiKeyBtnText">Set API Key</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════ MOBILE NAV ══════════════════════════ -->
+    <div class="mobile-nav">
+        <button class="nav-tab active" style="flex:1" onclick="switchTab('optimize', this)">🔧 Optimize</button>
+        <button class="nav-tab" style="flex:1" onclick="switchTab('generate', this)">✨ Generate</button>
+        <button class="nav-tab" style="flex:1" onclick="switchTab('analyze', this)">📊 Analyze</button>
+    </div>
+
+    <!-- ══════════════════════════ MAIN ══════════════════════════ -->
+    <div class="main">
+
+        <!-- ─────────── OPTIMIZE TAB ─────────── -->
+        <div id="tab-optimize" class="section active">
+
+            <!-- Input Card -->
+            <div class="card" id="opt-input-card">
+                <div class="card-title">
+                    <div class="card-title-icon">🔗</div>
+                    Fetch Blog from URL
+                </div>
+                <div class="input-row">
+                    <input type="text" id="opt-url" class="flex-1"
+                        placeholder="https://yourwebsite.com/blog/article-slug">
+                    <button class="btn btn-outline" onclick="fetchUrl('opt-url', 'opt-content')">
+                        ↓ Fetch Content
+                    </button>
+                </div>
+                <p class="hint-text">Website ka URL daalo — automatically blog text extract ho jayega</p>
+
+                <hr class="divider">
+
+                <div class="card-title" style="margin-bottom: 12px;">
+                    <div class="card-title-icon">📝</div>
+                    Blog Content
+                </div>
+                <textarea id="opt-content" placeholder="Ya blog content yahan directly paste karo..."></textarea>
+
+                <div class="input-row" style="margin-top: 14px;">
+                    <select id="opt-level" style="min-width: 200px;">
+                        <option value="basic">Basic Optimization (Light Touch)</option>
+                        <option value="advanced" selected>Advanced SEO Optimization</option>
+                        <option value="complete">Complete Rewrite (Same Topic)</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="runOptimize()" id="opt-btn">
+                        🚀 Optimize Now
+                    </button>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div class="card hidden" id="opt-loading">
+                <div class="loading-overlay">
+                    <div class="spinner"></div>
+                    <p style="color: var(--text); font-weight: 600; margin-bottom: 10px;">AI Analysis chal rahi hai...
+                    </p>
+                    <ul class="loading-steps" id="opt-steps">
+                        <li id="step-opt-1">
+                            <div class="step-dot active"></div>Blog content read kar raha hai...
+                        </li>
+                        <li id="step-opt-2">
+                            <div class="step-dot"></div>SEO score calculate kar raha hai...
+                        </li>
+                        <li id="step-opt-3">
+                            <div class="step-dot"></div>Keywords aur meta tags generate kar raha hai...
+                        </li>
+                        <li id="step-opt-4">
+                            <div class="step-dot"></div>FAQs generate kar raha hai...
+                        </li>
+                        <li id="step-opt-5">
+                            <div class="step-dot"></div>Optimized blog likh raha hai...
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="hidden" id="opt-results">
+                <button class="back-btn" onclick="resetOptimize()">← Wapas Jao</button>
+
+                <!-- Scores -->
+                <div class="metrics-grid" id="opt-metrics"></div>
+
+                <!-- Meta -->
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-title-icon">🏷️</div>SEO Meta Tags
+                    </div>
+                    <div class="two-col">
+                        <div>
+                            <div class="meta-box">
+                                <div class="meta-box-label">Meta Title</div>
+                                <div class="meta-box-value" id="opt-meta-title"></div>
+                                <div class="meta-char-count" id="opt-meta-title-count"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="meta-box">
+                                <div class="meta-box-label">Meta Description</div>
+                                <div class="meta-box-value" id="opt-meta-desc"></div>
+                                <div class="meta-char-count" id="opt-meta-desc-count"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="meta-box" style="margin-top: 0;">
+                        <div class="meta-box-label">Focus Keyword</div>
+                        <div class="meta-box-value" id="opt-focus-kw" style="color: var(--primary); font-weight: 600;">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="section-label">LSI / Related Keywords</div>
+                        <div class="tag-container" id="opt-lsi-tags"></div>
+                    </div>
+                </div>
+
+                <!-- Recommendations -->
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-title-icon">💡</div>Recommendations
+                    </div>
+                    <ul class="rec-list" id="opt-recs"></ul>
+                </div>
+
+                <!-- FAQs -->
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-title-icon">❓</div>AI-Generated FAQs
+                    </div>
+                    <div id="opt-faqs"></div>
+                </div>
+
+                <!-- Optimized Content -->
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-title-icon">📄</div>Optimized Blog Post
+                    </div>
+                    <div class="content-preview" id="opt-content-out"></div>
+                    <div class="export-bar">
+                        <span>Export karo:</span>
+                        <button class="btn btn-success btn-sm"
+                            onclick="downloadDoc('opt-content-out', 'opt-meta-title')">📄 Download .doc (Word)</button>
+                        <button class="btn btn-outline btn-sm"
+                            onclick="downloadMd('opt-content-out', 'opt-meta-title')">📝 Download .md
+                            (Markdown)</button>
+                        <button class="btn btn-outline btn-sm" onclick="copyText('opt-content-out')">📋 Copy
+                            Text</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─────────── GENERATE TAB ─────────── -->
+        <div id="tab-generate" class="section">
+            <!-- Input -->
+            <div class="card" id="gen-input-card">
+                <div class="card-title">
+                    <div class="card-title-icon">✨</div>New Blog Generate Karo
+                </div>
+
+                <div class="two-col" style="margin-bottom: 14px;">
+                    <div>
+                        <label class="section-label">Blog Topic *</label>
+                        <input type="text" id="gen-topic" class="flex-1" style="width:100%"
+                            placeholder="e.g., How to do SEO for ecommerce website">
+                    </div>
+                    <div>
+                        <label class="section-label">Target Keyword *</label>
+                        <input type="text" id="gen-keyword" class="flex-1" style="width:100%"
+                            placeholder="e.g., ecommerce SEO tips">
+                    </div>
+                </div>
+
+                <div class="two-col" style="margin-bottom: 14px;">
+                    <div>
+                        <label class="section-label">Content Length</label>
+                        <select id="gen-length" style="width:100%">
+                            <option value="short">Short (600–900 words)</option>
+                            <option value="medium" selected>Medium (1200–1600 words)</option>
+                            <option value="long">Long (2200–2800 words)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="section-label">Writing Tone</label>
+                        <select id="gen-tone" style="width:100%">
+                            <option value="Professional" selected>Professional</option>
+                            <option value="Casual & Friendly">Casual & Friendly</option>
+                            <option value="Authoritative">Authoritative</option>
+                            <option value="Conversational">Conversational</option>
+                            <option value="Educational">Educational</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 14px;">
+                    <label class="section-label">Additional Instructions (Optional)</label>
+                    <textarea id="gen-instructions"
+                        placeholder="e.g., Include case studies, add Hindi examples, target Indian audience, avoid technical jargon..."></textarea>
+                </div>
+
+                <button class="btn btn-primary" onclick="runGenerate()" id="gen-btn">✨ Generate Blog Post</button>
+            </div>
+
+            <!-- Loading -->
+            <div class="card hidden" id="gen-loading">
+                <div class="loading-overlay">
+                    <div class="spinner"></div>
+                    <p style="color: var(--text); font-weight: 600; margin-bottom: 10px;">AI blog likh raha hai...</p>
+                    <ul class="loading-steps" id="gen-steps">
+                        <li id="step-gen-1">
+                            <div class="step-dot active"></div>Topic research kar raha hai...
+                        </li>
+                        <li id="step-gen-2">
+                            <div class="step-dot"></div>Outline bana raha hai...
+                        </li>
+                        <li id="step-gen-3">
+                            <div class="step-dot"></div>SEO structure set kar raha hai...
+                        </li>
+                        <li id="step-gen-4">
+                            <div class="step-dot"></div>Content likh raha hai...
+                        </li>
+                        <li id="step-gen-5">
+                            <div class="step-dot"></div>FAQs aur meta tags add kar raha hai...
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="hidden" id="gen-results">
+                <button class="back-btn" onclick="resetGenerate()">← Wapas Jao</button>
+
+                <!-- Stats -->
+                <div class="metrics-grid" id="gen-metrics"></div>
+
+                <!-- Meta -->
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-title-icon">🏷️</div>SEO Meta Tags
+                    </div>
+                    <div class="two-col">
+                        <div>
+                            <div class="meta-box">
+                                <div class="meta-box-label">Meta Title</div>
+                                <div class="meta-box-value" id="gen-meta-title"></div>
+                                <div class="meta-char-count" id="gen-meta-title-count"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="meta-box">
+                                <div class="meta-box-label">Meta Description</div>
+                                <div class="meta-box-value" id="gen-meta-desc"></div>
+                                <div class="meta-char-count" id="gen-meta-desc-count"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="meta-box" style="margin-top: 0;">
+                        <div class="meta-box-label">Focus Keyword</div>
+                        <div class="meta-box-value" id="gen-focus-kw" style="color: var(--primary); font-weight: 600;">
+                        </div>
+                    </div>
+                    <div>
+                        <div class="section-label">LSI / Related Keywords</div>
+                        <div class="tag-container" id="gen-lsi-tags"></div>
+                    </div>
+                </div>
+
+                <!-- FAQs -->
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-title-icon">❓</div>FAQs (Blog me Include Karo)
+                    </div>
+                    <div id="gen-faqs"></div>
+                </div>
+
+                <!-- Content -->
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-title-icon">📄</div>Generated Blog Post
+                    </div>
+                    <div class="content-preview" id="gen-content-out"></div>
+                    <div class="export-bar">
+                        <span>Export karo:</span>
+                        <button class="btn btn-success btn-sm"
+                            onclick="downloadDoc('gen-content-out', 'gen-meta-title')">📄 Download .doc (Word)</button>
+                        <button class="btn btn-outline btn-sm"
+                            onclick="downloadMd('gen-content-out', 'gen-meta-title')">📝 Download .md
+                            (Markdown)</button>
+                        <button class="btn btn-outline btn-sm" onclick="copyText('gen-content-out')">📋 Copy
+                            Text</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─────────── ANALYZE TAB ─────────── -->
+        <div id="tab-analyze" class="section">
+
+            <!-- Input -->
+            <div class="card" id="ana-input-card">
+                <div class="card-title">
+                    <div class="card-title-icon">🔗</div>Fetch Blog from URL
+                </div>
+                <div class="input-row">
+                    <input type="text" id="ana-url" class="flex-1"
+                        placeholder="https://yourwebsite.com/blog/article-slug">
+                    <button class="btn btn-outline" onclick="fetchUrl('ana-url', 'ana-content')">↓ Fetch
+                        Content</button>
+                </div>
+                <p class="hint-text">Ya neeche directly content paste karo</p>
+                <hr class="divider">
+                <div class="card-title" style="margin-bottom: 12px;">
+                    <div class="card-title-icon">📝</div>Blog Content
+                </div>
+                <textarea id="ana-content"
+                    placeholder="Yahan blog content paste karo jo aap analyze karna chahte ho..."></textarea>
+                <div style="margin-top: 14px;">
+                    <button class="btn btn-primary" onclick="runAnalyze()" id="ana-btn">📊 Analyze Content</button>
+                </div>
+            </div>
+
+            <!-- Loading -->
+            <div class="card hidden" id="ana-loading">
+                <div class="loading-overlay">
+                    <div class="spinner"></div>
+                    <p style="color: var(--text); font-weight: 600; margin-bottom: 10px;">Content analyze ho raha hai...
+                    </p>
+                    <ul class="loading-steps">
+                        <li id="step-ana-1">
+                            <div class="step-dot active"></div>Content parh raha hai...
+                        </li>
+                        <li id="step-ana-2">
+                            <div class="step-dot"></div>SEO factors check kar raha hai...
+                        </li>
+                        <li id="step-ana-3">
+                            <div class="step-dot"></div>Readability aur engagement score calculate kar raha hai...
+                        </li>
+                        <li id="step-ana-4">
+                            <div class="step-dot"></div>Suggestions taiyar kar raha hai...
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Results -->
+            <div class="hidden" id="ana-results">
+                <button class="back-btn" onclick="resetAnalyze()">← Wapas Jao</button>
+
+                <!-- Scores -->
+                <div class="metrics-grid" id="ana-metrics"></div>
+
+                <!-- Overall Feedback -->
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-title-icon">💬</div>AI Feedback
+                    </div>
+                    <div class="alert alert-info" id="ana-feedback" style="margin-bottom: 0;"></div>
+                </div>
+
+                <!-- Meta Suggestions -->
+                <div class="card">
+                    <div class="card-title">
+                        <div class="card-title-icon">🏷️</div>Suggested Meta Tags
+                    </div>
+                    <div class="two-col">
+                        <div>
+                            <div class="meta-box">
+                                <div class="meta-box-label">Suggested Meta Title</div>
+                                <div class="meta-box-value" id="ana-meta-title"></div>
+                                <div class="meta-char-count" id="ana-meta-title-count"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="meta-box">
+                                <div class="meta-box-label">Suggested Meta Description</div>
+                                <div class="meta-box-value" id="ana-meta-desc"></div>
+                                <div class="meta-char-count" id="ana-meta-desc-count"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="section-label">Detected Keywords</div>
+                        <div class="tag-container" id="ana-keywords"></div>
+                    </div>
+                </div>
+
+                <!-- Strengths & Improvements -->
+                <div class="two-col">
+                    <div class="card">
+                        <div class="card-title" style="color: var(--success);">✅ Strengths</div>
+                        <ul class="rec-list" id="ana-strengths" style="color: var(--success);"></ul>
+                    </div>
+                    <div class="card">
+                        <div class="card-title" style="color: var(--warning);">⚠️ Improvements</div>
+                        <ul class="rec-list" id="ana-improvements"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div><!-- /main -->
+
+    <!-- ══════════════════════════ API KEY MODAL ══════════════════════════ -->
+    <div class="modal-overlay hidden" id="api-modal">
+        <div class="modal">
+            <div class="modal-title">🔑 Gemini API Key Set Karo</div>
+            <div class="modal-subtitle">
+                Yeh tool Google Gemini AI use karta hai. Apna <strong>free API key</strong> Google AI Studio se lo aur
+                yahan paste karo.<br>
+                Key sirf aapke browser me store hogi, server par nahi.
+            </div>
+
+            <div>
+                <label class="section-label">Your Gemini API Key</label>
+                <input type="password" id="api-key-input" style="width:100%; margin-bottom: 8px;" placeholder="AIza...">
+                <p class="hint-text">
+                    Key nahi hai?
+                    <a class="modal-link" href="https://aistudio.google.com/app/apikey" target="_blank">
+                        Google AI Studio par Free Key banao →
+                    </a>
+                </p>
+            </div>
+
+            <div class="alert alert-info" style="margin-top: 16px; margin-bottom: 0;">
+                ✅ Gemini API free tier me har din 1500+ requests deta hai — daily use ke liye kaafi hai!
+            </div>
+
+            <div class="modal-actions">
+                <button class="btn btn-primary" onclick="saveApiKey()">Save Key</button>
+                <button class="btn btn-outline" onclick="closeApiModal()">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script>
+        // ══════════════════════════════════
+        // STATE
+        // ══════════════════════════════════
+        let apiKey = localStorage.getItem('gemini_api_key') || '';
+        let currentTab = 'optimize';
+
+        // ══════════════════════════════════
+        // INIT
+        // ══════════════════════════════════
+        window.onload = () => {
+            updateApiStatus();
+        };
+
+        function updateApiStatus() {
+            const dot = document.getElementById('apiDot');
+            const btnText = document.getElementById('apiKeyBtnText');
+            const btn = document.getElementById('apiKeyBtn');
+            if (apiKey) {
+                dot.classList.add('connected');
+                btnText.textContent = 'API Key ✓';
+                btn.classList.add('active');
+            } else {
+                dot.classList.remove('connected');
+                btnText.textContent = 'Set API Key';
+                btn.classList.remove('active');
+            }
+        }
+
+        // ══════════════════════════════════
+        // API KEY MODAL
+        // ══════════════════════════════════
+        function openApiModal() {
+            document.getElementById('api-modal').classList.remove('hidden');
+            document.getElementById('api-key-input').value = apiKey || '';
+        }
+
+        function closeApiModal() {
+            document.getElementById('api-modal').classList.add('hidden');
+        }
+
+        function saveApiKey() {
+            const val = document.getElementById('api-key-input').value.trim();
+            if (!val) return showToast('API key daalo pehle!', 'danger');
+            apiKey = val;
+            localStorage.setItem('gemini_api_key', val);
+            closeApiModal();
+            updateApiStatus();
+            showToast('API Key save ho gayi! ✓', 'success');
+        }
+
+        function checkApiKey() {
+            if (!apiKey) {
+                openApiModal();
+                showToast('Pehle Gemini API key set karo', 'warning');
+                return false;
+            }
+            return true;
+        }
+
+        // ══════════════════════════════════
+        // TAB SWITCHING
+        // ══════════════════════════════════
+        function switchTab(tab, btn) {
+            currentTab = tab;
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            if (btn) {
+                // Handle both desktop and mobile nav
+                const allTabs = document.querySelectorAll('.nav-tab');
+                allTabs.forEach(t => {
+                    if (t.getAttribute('onclick') === btn.getAttribute('onclick')) {
+                        t.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        // ══════════════════════════════════
+        // URL FETCHER
+        // ══════════════════════════════════
+        async function fetchUrl(urlInputId, contentTextareaId) {
+            const url = document.getElementById(urlInputId).value.trim();
+            if (!url) return showToast('URL daalo pehle', 'warning');
+
+            const btn = event.target;
+            btn.disabled = true;
+            btn.textContent = 'Fetch ho raha hai...';
+
+            try {
+                const res = await fetch(CONFIG.BACKEND_URL + '/api/fetch-url', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Fetch failed');
+                document.getElementById(contentTextareaId).value = data.content;
+                showToast(`✓ Content fetch ho gaya! (~${data.wordCount} words)`, 'success');
+            } catch (err) {
+                showToast('Error: ' + err.message, 'danger');
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '↓ Fetch Content';
+            }
+        }
+
+        // ══════════════════════════════════
+        // OPTIMIZE
+        // ══════════════════════════════════
+        async function runOptimize() {
+            if (!checkApiKey()) return;
+            const content = document.getElementById('opt-content').value.trim();
+            if (!content || content.length < 100) return showToast('Thoda zyada content daalo (100+ characters)', 'warning');
+
+            document.getElementById('opt-input-card').classList.add('hidden');
+            document.getElementById('opt-loading').classList.remove('hidden');
+            document.getElementById('opt-results').classList.add('hidden');
+            document.getElementById('opt-btn').disabled = true;
+
+            // Animate steps
+            animateSteps(['step-opt-1', 'step-opt-2', 'step-opt-3', 'step-opt-4', 'step-opt-5'], 7000);
+
+            try {
+                const res = await fetch(CONFIG.BACKEND_URL + '/api/ai/optimize', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content, apiKey, level: document.getElementById('opt-level').value })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Optimization failed');
+                renderOptimizeResults(data);
+            } catch (err) {
+                document.getElementById('opt-input-card').classList.remove('hidden');
+                document.getElementById('opt-loading').classList.add('hidden');
+                document.getElementById('opt-btn').disabled = false;
+                showToast('Error: ' + err.message, 'danger');
+            }
+        }
+
+        function renderOptimizeResults(d) {
+            document.getElementById('opt-loading').classList.add('hidden');
+            document.getElementById('opt-results').classList.remove('hidden');
+
+            // Metrics
+            renderMetrics('opt-metrics', [
+                { label: 'SEO Score', value: d.seoScore, suffix: '/100', color: scoreColor(d.seoScore) },
+                { label: 'Readability', value: d.readabilityScore, suffix: '/100', color: scoreColor(d.readabilityScore) },
+                { label: 'Keyword', value: d.keywordDensityScore, suffix: '/100', color: scoreColor(d.keywordDensityScore) },
+                { label: 'Engagement', value: d.engagementScore, suffix: '/100', color: scoreColor(d.engagementScore) }
+            ]);
+
+            // Meta
+            setText('opt-meta-title', d.metaTitle);
+            setText('opt-meta-title-count', `${(d.metaTitle || '').length} characters (60 ideal)`);
+            setText('opt-meta-desc', d.metaDescription);
+            setText('opt-meta-desc-count', `${(d.metaDescription || '').length} characters (150-160 ideal)`);
+            setText('opt-focus-kw', d.focusKeyword);
+            renderTags('opt-lsi-tags', d.lsiKeywords || []);
+            renderRecList('opt-recs', d.recommendations || []);
+            renderFaqs('opt-faqs', d.faqs || []);
+
+            const el = document.getElementById('opt-content-out');
+            el.innerHTML = markdownToHtml(d.optimizedContent || '');
+            el._rawText = d.optimizedContent || '';
+        }
+
+        function resetOptimize() {
+            document.getElementById('opt-input-card').classList.remove('hidden');
+            document.getElementById('opt-results').classList.add('hidden');
+            document.getElementById('opt-btn').disabled = false;
+        }
+
+        // ══════════════════════════════════
+        // GENERATE
+        // ══════════════════════════════════
+        async function runGenerate() {
+            if (!checkApiKey()) return;
+            const topic = document.getElementById('gen-topic').value.trim();
+            const keyword = document.getElementById('gen-keyword').value.trim();
+            if (!topic || !keyword) return showToast('Topic aur keyword dono daalo', 'warning');
+
+            document.getElementById('gen-input-card').classList.add('hidden');
+            document.getElementById('gen-loading').classList.remove('hidden');
+            document.getElementById('gen-results').classList.add('hidden');
+            document.getElementById('gen-btn').disabled = true;
+
+            animateSteps(['step-gen-1', 'step-gen-2', 'step-gen-3', 'step-gen-4', 'step-gen-5'], 10000);
+
+            try {
+                const res = await fetch(CONFIG.BACKEND_URL + '/api/ai/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        topic, keyword,
+                        length: document.getElementById('gen-length').value,
+                        tone: document.getElementById('gen-tone').value,
+                        instructions: document.getElementById('gen-instructions').value,
+                        apiKey
+                    })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Generation failed');
+                renderGenerateResults(data);
+            } catch (err) {
+                document.getElementById('gen-input-card').classList.remove('hidden');
+                document.getElementById('gen-loading').classList.add('hidden');
+                document.getElementById('gen-btn').disabled = false;
+                showToast('Error: ' + err.message, 'danger');
+            }
+        }
+
+        function renderGenerateResults(d) {
+            document.getElementById('gen-loading').classList.add('hidden');
+            document.getElementById('gen-results').classList.remove('hidden');
+
+            renderMetrics('gen-metrics', [
+                { label: 'Word Count', value: d.wordCount || '—', suffix: '', color: '' },
+                { label: 'Reading Time', value: d.readingTime || '—', suffix: '', color: '' },
+                { label: 'Headings', value: d.headingCount || '—', suffix: '', color: '' },
+                { label: 'Keywords', value: (d.lsiKeywords || []).length + 1, suffix: '', color: '' }
+            ]);
+
+            setText('gen-meta-title', d.metaTitle);
+            setText('gen-meta-title-count', `${(d.metaTitle || '').length} characters`);
+            setText('gen-meta-desc', d.metaDescription);
+            setText('gen-meta-desc-count', `${(d.metaDescription || '').length} characters`);
+            setText('gen-focus-kw', d.focusKeyword);
+            renderTags('gen-lsi-tags', d.lsiKeywords || []);
+            renderFaqs('gen-faqs', d.faqs || []);
+
+            const el = document.getElementById('gen-content-out');
+            el.innerHTML = markdownToHtml(d.blogContent || '');
+            el._rawText = d.blogContent || '';
+        }
+
+        function resetGenerate() {
+            document.getElementById('gen-input-card').classList.remove('hidden');
+            document.getElementById('gen-results').classList.add('hidden');
+            document.getElementById('gen-btn').disabled = false;
+        }
+
+        // ══════════════════════════════════
+        // ANALYZE
+        // ══════════════════════════════════
+        async function runAnalyze() {
+            if (!checkApiKey()) return;
+            const content = document.getElementById('ana-content').value.trim();
+            if (!content || content.length < 100) return showToast('Thoda zyada content daalo', 'warning');
+
+            document.getElementById('ana-input-card').classList.add('hidden');
+            document.getElementById('ana-loading').classList.remove('hidden');
+            document.getElementById('ana-results').classList.add('hidden');
+            document.getElementById('ana-btn').disabled = true;
+
+            animateSteps(['step-ana-1', 'step-ana-2', 'step-ana-3', 'step-ana-4'], 6000);
+
+            try {
+                const res = await fetch(CONFIG.BACKEND_URL + '/api/ai/analyze', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content, apiKey })
+                });
+                const data = await res.json();
+                if (!res.ok) throw new Error(data.error || 'Analysis failed');
+                renderAnalyzeResults(data);
+            } catch (err) {
+                document.getElementById('ana-input-card').classList.remove('hidden');
+                document.getElementById('ana-loading').classList.add('hidden');
+                document.getElementById('ana-btn').disabled = false;
+                showToast('Error: ' + err.message, 'danger');
+            }
+        }
+
+        function renderAnalyzeResults(d) {
+            document.getElementById('ana-loading').classList.add('hidden');
+            document.getElementById('ana-results').classList.remove('hidden');
+
+            renderMetrics('ana-metrics', [
+                { label: 'Readability', value: d.readabilityScore, suffix: '/100', color: scoreColor(d.readabilityScore) },
+                { label: 'SEO Score', value: d.seoScore, suffix: '/100', color: scoreColor(d.seoScore) },
+                { label: 'Engagement', value: d.engagementScore, suffix: '/100', color: scoreColor(d.engagementScore) },
+                { label: 'Quality', value: d.qualityScore, suffix: '/100', color: scoreColor(d.qualityScore) },
+                { label: 'Word Count', value: d.wordCount || '—', suffix: '', color: '' },
+                { label: 'Avg Words/Sentence', value: d.avgWordsPerSentence || '—', suffix: '', color: '' }
+            ]);
+
+            setText('ana-feedback', d.overallFeedback || '');
+            setText('ana-meta-title', d.suggestedMetaTitle || '');
+            setText('ana-meta-title-count', `${(d.suggestedMetaTitle || '').length} characters`);
+            setText('ana-meta-desc', d.suggestedMetaDescription || '');
+            setText('ana-meta-desc-count', `${(d.suggestedMetaDescription || '').length} characters`);
+            renderTags('ana-keywords', d.detectedKeywords || []);
+
+            const strengthsList = document.getElementById('ana-strengths');
+            strengthsList.innerHTML = (d.strengths || []).map(s => `<li style="color: var(--success);">${s}</li>`).join('');
+
+            renderRecList('ana-improvements', d.improvements || []);
+        }
+
+        function resetAnalyze() {
+            document.getElementById('ana-input-card').classList.remove('hidden');
+            document.getElementById('ana-results').classList.add('hidden');
+            document.getElementById('ana-btn').disabled = false;
+        }
+
+        // ══════════════════════════════════
+        // RENDER HELPERS
+        // ══════════════════════════════════
+        function renderMetrics(containerId, metrics) {
+            const el = document.getElementById(containerId);
+            el.innerHTML = metrics.map(m => `
+            <div class="metric-card">
+                <div class="metric-label">${m.label}</div>
+                <div class="metric-value ${m.color}">${m.value}${m.suffix}</div>
+            </div>
+        `).join('');
+        }
+
+        function renderTags(containerId, tags) {
+            const el = document.getElementById(containerId);
+            el.innerHTML = tags.map(t => `<span class="tag">🏷 ${t}</span>`).join('');
+        }
+
+        function renderRecList(containerId, items) {
+            const el = document.getElementById(containerId);
+            el.innerHTML = items.map(i => `<li>${i}</li>`).join('');
+        }
+
+        function renderFaqs(containerId, faqs) {
+            const el = document.getElementById(containerId);
+            el.innerHTML = faqs.map((f, i) => `
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(${containerId.replace('-', '')}_${i})">
+                    <span>Q: ${f.question}</span>
+                    <span>▾</span>
+                </div>
+                <div class="faq-answer" id="${containerId.replace('-', '')}_${i}" style="display:none;">${f.answer}</div>
+            </div>
+        `).join('');
+        }
+
+        function toggleFaq(id) {
+            const el = document.getElementById(String(id));
+            if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function setText(id, val) {
+            const el = document.getElementById(id);
+            if (el) el.textContent = val || '';
+        }
+
+        function scoreColor(score) {
+            if (!score) return '';
+            if (score >= 80) return 'success';
+            if (score >= 60) return 'warning';
+            return 'danger';
+        }
+
+        // ══════════════════════════════════
+        // MARKDOWN TO HTML
+        // ══════════════════════════════════
+        function markdownToHtml(md) {
+            if (!md) return '';
+            return md
+                .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+                .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+                .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+                .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.+?)\*/g, '<em>$1</em>')
+                .replace(/^- (.+)$/gm, '<li>$1</li>')
+                .replace(/(<li>.*<\/li>)/gs, '<ul>$1</ul>')
+                .replace(/\n{2,}/g, '</p><p>')
+                .replace(/^(?!<[h|u|l|p])(.+)$/gm, (m) => m.trim() ? m : '')
+                .replace(/\n/g, '<br>');
+        }
+
+        // ══════════════════════════════════
+        // EXPORT FUNCTIONS
+        // ══════════════════════════════════
+        function downloadDoc(contentId, titleId) {
+            const el = document.getElementById(contentId);
+            const rawText = el._rawText || el.innerText;
+            const title = document.getElementById(titleId)?.textContent || 'Blog Post';
+
+            const htmlContent = `
+<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:w="urn:schemas-microsoft-com:office:word"
+      xmlns="http://www.w3.org/TR/REC-html40">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>90</w:Zoom></w:WordDocument></xml><![endif]-->
+<style>
+  body { font-family: Calibri, Arial, sans-serif; font-size: 12pt; line-height: 1.6; margin: 2cm; color: #222; }
+  h1 { font-size: 20pt; color: #2c3e50; border-bottom: 2px solid #6c63ff; padding-bottom: 8px; }
+  h2 { font-size: 16pt; color: #34495e; margin-top: 20px; }
+  h3 { font-size: 13pt; color: #555; margin-top: 14px; }
+  p { margin: 10px 0; }
+  ul { margin-left: 20px; }
+  li { margin-bottom: 4px; }
+  strong { color: #2c3e50; }
+</style>
+</head>
+<body>
+${markdownToHtml(rawText)}
+</body>
+</html>`;
+
+            const blob = new Blob(['\ufeff', htmlContent], { type: 'application/msword' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = sanitizeFilename(title) + '.doc';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('📄 Word Document download ho gaya!', 'success');
+        }
+
+        function downloadMd(contentId, titleId) {
+            const el = document.getElementById(contentId);
+            const rawText = el._rawText || el.innerText;
+            const title = document.getElementById(titleId)?.textContent || 'Blog Post';
+
+            const blob = new Blob([rawText], { type: 'text/markdown;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = sanitizeFilename(title) + '.md';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast('📝 Markdown file download ho gayi!', 'success');
+        }
+
+        function copyText(contentId) {
+            const el = document.getElementById(contentId);
+            const rawText = el._rawText || el.innerText;
+            navigator.clipboard.writeText(rawText).then(() => showToast('📋 Content copy ho gaya!', 'success'));
+        }
+
+        function sanitizeFilename(name) {
+            return name.replace(/[^a-z0-9\-_\s]/gi, '').replace(/\s+/g, '-').substring(0, 60) || 'blog-post';
+        }
+
+        // ══════════════════════════════════
+        // STEP ANIMATOR
+        // ══════════════════════════════════
+        function animateSteps(stepIds, totalDuration) {
+            const delay = totalDuration / stepIds.length;
+            stepIds.forEach((id, i) => {
+                setTimeout(() => {
+                    const el = document.getElementById(id);
+                    if (!el) return;
+                    const dot = el.querySelector('.step-dot');
+                    // Mark previous as done
+                    if (i > 0) {
+                        const prev = document.getElementById(stepIds[i - 1]);
+                        if (prev) {
+                            prev.classList.add('done');
+                            prev.classList.remove('active');
+                            const prevDot = prev.querySelector('.step-dot');
+                            if (prevDot) { prevDot.classList.add('done'); prevDot.classList.remove('active'); }
+                        }
+                    }
+                    el.classList.add('active');
+                    if (dot) { dot.classList.add('active'); }
+                }, delay * i);
+            });
+        }
+
+        // ══════════════════════════════════
+        // TOAST NOTIFICATION
+        // ══════════════════════════════════
+        function showToast(msg, type = 'success') {
+            const existing = document.getElementById('toast');
+            if (existing) existing.remove();
+
+            const colors = {
+                success: '#10b981', danger: '#ef4444', warning: '#f59e0b', info: '#22d3ee'
+            };
+
+            const toast = document.createElement('div');
+            toast.id = 'toast';
+            toast.style.cssText = `
+            position: fixed; bottom: 30px; right: 20px; z-index: 9999;
+            background: #1a1a2e; border: 1px solid ${colors[type] || '#10b981'};
+            color: ${colors[type] || '#10b981'}; padding: 14px 22px;
+            border-radius: 12px; font-size: 0.9em; font-family: Inter, sans-serif;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+            animation: slideIn 0.3s ease;
+        `;
+            toast.textContent = msg;
+
+            const style = document.createElement('style');
+            style.textContent = '@keyframes slideIn { from { opacity:0; transform: translateY(20px); } to { opacity:1; transform: translateY(0); } }';
+            document.head.appendChild(style);
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3500);
+        }
+    </script>
+</body>
+
+</html>
