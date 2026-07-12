@@ -82,7 +82,19 @@ app.post('/api/crawl', async (req, res) => {
         });
         const crawler = new CheerioCrawler({
             maxRequestsPerCrawl: 30000,
-            maxConcurrency: 10,
+            maxConcurrency: 5,
+            preNavigationHooks: [
+                async ({ request }) => {
+                    request.headers = {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+                        'Accept-Language': 'en-US,en;q=0.9',
+                        'Accept-Encoding': 'gzip, deflate, br',
+                        'Connection': 'keep-alive',
+                        ...request.headers
+                    };
+                }
+            ],
             async requestHandler({ request, $, response }) {
                 crawledCount++;
                 const status = response ? response.statusCode : 0;
@@ -173,13 +185,21 @@ app.post('/api/pro/start', async (req, res) => {
             });
             const crawler = new CheerioCrawler({
                 maxRequestsPerCrawl: Infinity,
-                maxConcurrency: 8,
+                maxConcurrency: 5,
                 requestHandlerTimeoutSecs: 30,
                 navigationTimeoutSecs: 30,
 
                 preNavigationHooks: [
                     async ({ request }) => {
                         request.userData.startTime = Date.now();
+                        request.headers = {
+                            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+                            'Accept-Language': 'en-US,en;q=0.9',
+                            'Accept-Encoding': 'gzip, deflate, br',
+                            'Connection': 'keep-alive',
+                            ...request.headers
+                        };
                     }
                 ],
 
